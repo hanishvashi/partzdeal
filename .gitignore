@@ -14,6 +14,12 @@ public/hot
 # Laravel 5 & Lumen specific with changed public path
 public_html/storage
 public_html/hot
+/import
+/assets/images/partzdeal-india
+/assets/images/partzdeal-usa
+/assets/images/partzdeal-australia
+/importfiles
+/project/storage/
 
 storage/*.key
 .env
