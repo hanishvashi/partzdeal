@@ -1111,12 +1111,21 @@ $totalPrice = $cart->totalCartAmount($cart);
 		return view('front.faq',compact('fq','faqs'));
 	}
 
-  public function getProductsByCatId($catid,$limit,$offset,$sort,$minprice,$maxprice)
+  public function getProductsByCatId($catid,$limit,$offset,$sort,$minprice,$maxprice,$brand_id,$subcategory_id)
   {
     $cats = DB::table('products')
 			->select('products.*')
 			->where('products.status',1)->where('products.is_approve',1)->where('products.category_id',$catid)
       ->whereBetween('products.cprice', [$minprice, $maxprice])->where('products.store_id',$this->store_id);
+	  if(!empty($subcategory_id))
+        {
+            $cats = $cats->where('products.subcategory_id', $subcategory_id);          
+        }
+		
+	if(!empty($brand_id))
+        {
+            $cats = $cats->where('products.brand_id', $brand_id);          
+        }
 
       if($sort == "new")
       {
@@ -1178,11 +1187,18 @@ $totalPrice = $cart->totalCartAmount($cart);
         $sort = '';
         $limit=15;
         $offset=0;
-        $cats = $this->getProductsByCatId($cat->id,$limit,$offset,$sort,$prices['minprice'],$prices['maxprice']);
+        $cats = $this->getProductsByCatId($cat->id,$limit,$offset,$sort,$prices['minprice'],$prices['maxprice'],0,0);
         $total_product = $this->CountResult($cat->id,$prices['minprice'],$prices['maxprice']);
         $page = 1;
 
-        return view('front.category',compact('store_code','prices','slug','cat','sort','cats','total_product','limit','page'));
+		$filterdata['manufacturer'] = 0;
+		$filterdata['select_sub_category'] = 0;
+		$filterdata['select_category'] = $cat->id;
+		$brands = Brand::orderBy('brand_name','asc')->get();
+		
+		$subcategories = $this->getSubcategoriesBycatid($filterdata['select_category']);
+
+        return view('front.category',compact('brands','subcategories','filterdata','store_code','prices','slug','cat','sort','cats','total_product','limit','page'));
       }elseif(!empty($productinfo)){
         $id = $productinfo->id;
         $product = Product::findOrFail($id);
@@ -1544,15 +1560,29 @@ $totalPrice = $cart->totalCartAmount($cart);
 
     public function AjaxBrandFilterProduct(Request $request)
     {
+		if (Session::has('FRONT_STORE_ID')){
+		$this->store_id = session('FRONT_STORE_ID');
+		$store_code = $this->store_code = session('FRONT_STORE_CODE');
+		}else{
+		//$ip = '203.192.237.76'; /* Static IP address */
+		$ip = $_SERVER['REMOTE_ADDR'];
+		$storeinfo = $this->getCurrentStoreLocation($ip);
+		$this->store_id = $storeinfo->id;
+		$store_code = $this->store_code = $storeinfo->store_code;
+		session()->put('FRONT_STORE_CODE', $store_code);
+		session()->put('FRONT_STORE_ID', $this->store_id);
+		}
       $input = $request->all();
       $filterdata = $input;
+	
       $page = $filterdata['page'];
       $lpage= $page - 1;
       $limit = 15;
-      $offset = ceil($page * $limit);
+      $offset = ceil($lpage * $limit);
       $sort = $filterdata['sortby'];
       $cats = DB::table('products')
   			->select('products.*')
+			->where('products.store_id',$this->store_id)
         ->where('products.brand_id',$filterdata['manufacturer'])
   			->where('products.status',1)->where('products.is_approve',1);
         if(!empty($filterdata['select_category']))
@@ -1565,10 +1595,10 @@ $totalPrice = $cart->totalCartAmount($cart);
           }
           //$cats = $cats->where('product_categories.category_id',$filterdata['select_category']);
         }
-        if(!empty($filterdata['select_series']))
+        /*if(!empty($filterdata['select_series']))
         {
         $cats = $cats->where('products.series_id',$filterdata['select_series']);
-        }
+        }*/
 
         if($sort == "new")
         {
@@ -1673,6 +1703,8 @@ $totalPrice = $cart->totalCartAmount($cart);
 
       $input = $request->all();
       $category_id = $input['category_id'];
+	  $brand_id = $input['brand_id'];
+	  $subcategory_id = $input['subcategory_id'];
       $minprice = $input['pricemin'];
       $maxprice = $input['pricemax'];
       $page = $input['page'];
@@ -1680,7 +1712,7 @@ $totalPrice = $cart->totalCartAmount($cart);
       $limit = 15;
       $offset = ceil($lpage * $limit);
       $sort = $input['sortby'];
-      $cats = $this->getProductsByCatId($category_id,$limit,$offset,$sort,$minprice,$maxprice);
+      $cats = $this->getProductsByCatId($category_id,$limit,$offset,$sort,$minprice,$maxprice,$brand_id,$subcategory_id);
       $total_product = $this->CountResult($category_id,$minprice,$maxprice);
       return view('includes.product-grid-items',compact('page','cats','limit','total_product'));
     }

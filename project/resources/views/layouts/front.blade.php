@@ -582,11 +582,11 @@ var checkoutbutton = '<a class="button" href="{{route("front.checkout")}}" title
     </script>
 
     <script type="text/javascript">
-    	jQuery('#manufacturer').change(function() {
+    	jQuery('#brandSelector').change(function() {
       jQuery('.ajaxloadermodal').show();
     	var brandId = jQuery(this).val();
 var token = jQuery(this).find('input[name=_token]').val();
-    	jQuery.ajax({
+    	/*jQuery.ajax({
     			type: "GET",
     			url: "{{URL::to('/sidebarsearch/findseries')}}",
     			data: { bid: brandId },
@@ -595,7 +595,7 @@ var token = jQuery(this).find('input[name=_token]').val();
     				jQuery('#seriesSelector').html(resp);
     				jQuery('.ajaxloadermodal').hide();
     			}
-    		});
+    		});*/
 
         //jQuery('#cat-loader').css("display", "block");
         jQuery.ajax({

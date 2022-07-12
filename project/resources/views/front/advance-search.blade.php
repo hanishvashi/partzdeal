@@ -67,47 +67,6 @@ $j=1;
 @endsection
 
 @section('scripts')
-<script type="text/javascript">
-	$(document).on("click", ".add_to_wish" , function(){
-            var pid = $(this).data("pid"); //$("#pid").val();
-            $.ajax({
-                    type: "GET",
-                    url:"{{URL::to('/json/wish')}}",
-                    data:{id:pid},
-                    success:function(data){
-                        if(data == 1)
-                        {
-                            $.notify("{{$gs->wish_success}}","success");
-							setTimeout(function () {
-							location.reload(true);
-							}, 1000);
-                        }
-                        else {
-                            $.notify("{{$gs->wish_error}}","error");
-                        }
-                      }
-              });
-
-            return false;
-        });
-	$('.removewish').click(function(){
-			var pid = $(this).data("pid");
-
-            $.ajax({
-                    type: "GET",
-                    url:"{{URL::to('/json/removewish')}}",
-                    data:{id:pid},
-                    success:function(data){
-        $.notify("{{$gs->wish_remove}}","success");
-				setTimeout(function () {
-				location.reload(true);
-				}, 1000);
-                      }
-              });
-        return false;
-    });
-</script>
-
 
 <script type="text/javascript">
             $("#ex2").slider({});
@@ -132,15 +91,15 @@ $j=1;
 
 
   function loadMoreData(page){
-		var manufacturer = $("#manufacturer").val();
-		var series_id = $("#seriesSelector").val();
+		var manufacturer = $("#brandSelector").val();
+		//var series_id = $("#seriesSelector").val();
 		var category_id = $("#categoriesSelector").val();
 		var sortby = $("#sortby").val();
 		var sub_category_id = $("#subcategoriesSelector").val();
     jQuery.ajax({
               url:"{{URL::to('/json/brandfilterproductajax')}}",
               type: "POST",
-              data: { "_token": "{{ csrf_token() }}",sortby:sortby,page:page,manufacturer:manufacturer,select_series:series_id, select_category:category_id,select_sub_category:sub_category_id, ajax: 'ajax'},
+              data: { "_token": "{{ csrf_token() }}",sortby:sortby,page:page,manufacturer:manufacturer,select_category:category_id,select_sub_category:sub_category_id, ajax: 'ajax'},
               beforeSend: function()
               {
 								jQuery('.ajaxloadermodal').show();
@@ -169,8 +128,8 @@ $j=1;
 
 function AdvanceSearchfilter()
 {
-	var manufacturer = $("#manufacturer").val();
-	var series_id = $("#seriesSelector").val();
+	//var manufacturer = $("#manufacturer").val();
+	var manufacturer = $("#brandSelector").val();
 	var category_id = $("#categoriesSelector").val();
 	var sub_category_id = $("#subcategoriesSelector").val();
 	var sortby = $("#sortby").val();
@@ -178,7 +137,7 @@ var page = 1;
 	jQuery.ajax({
 						url:"{{URL::to('/json/brandfilterproductajax')}}",
 						type: "POST",
-						data: { "_token": "{{ csrf_token() }}",sortby:sortby,page:page,manufacturer:manufacturer,select_series:series_id, select_category:category_id,select_sub_category:sub_category_id, ajax: 'ajax'},
+						data: { "_token": "{{ csrf_token() }}",sortby:sortby,page:page,manufacturer:manufacturer,select_category:category_id,select_sub_category:sub_category_id, ajax: 'ajax'},
 						beforeSend: function()
 						{
 							jQuery('.ajaxloadermodal').show();
@@ -192,7 +151,7 @@ var page = 1;
 					jQuery('.ajaxloadermodal').hide();
 						return;
 						}
-						console.log(data);
+						//console.log(data);
 					 jQuery('.ajaxloadermodal').hide();
 						jQuery("#product_items_grid").html(data);
 				})

@@ -1,8 +1,8 @@
 <div class="product-filter-option">
 <!--<h2 class="filter-title">{{$lang->doci}}</h2>-->
-<h4 class="heading_three mb-4 pb-2 pt-2 pr-2 pl-2">Brands</h4>
+<h4 class="heading_three mb-4 pb-2 pt-2 pr-2 pl-2">Search Filter</h4>
 <div class="brnad-side-filter">
-  <ul style="direction: ltr;">
+  <ul style="direction: ltr; display:none;">
   @php
   $x=0;
   @endphp
@@ -12,16 +12,16 @@
   </li>
   @endforeach
   </ul>
-<form style="display:none;" method="post" action="{{route('ajax-brand-filter')}}">
+<form style="" method="post" action="{{route('ajax-brand-filter')}}">
 {{csrf_field()}}
 <div class="row justify-content-center">
   <input type="hidden" name="manufacturer" id="manufacturer" value="<?php echo $filterdata['manufacturer'];?>">
   <div class="col-12">
-  <label for="seriesSelector">Select Series</label>
-  <select id="seriesSelector" name="select_series" class="form-control">
-<option value="">Select Series</option>
-  @foreach($allseries as $seriesrow)
-  <option <?php if($filterdata['select_series']==$seriesrow->id){ echo 'selected'; }?> value="{{$seriesrow->id}}">{{$seriesrow->series_name}}</option>
+  <label for="brandSelector">Select Brand</label>
+  <select id="brandSelector" name="select_brand" class="form-control">
+<option value="">Select Brand</option>
+  @foreach($brands as $brandrow)
+  <option <?php if($filterdata['manufacturer']==$brandrow->id){ echo 'selected'; }?> value="{{$brandrow->id}}">{{$brandrow->brand_name}}</option>
   @endforeach
   </select>
   </div>
@@ -52,4 +52,6 @@
 </form>
 </div>
 </div>
+{{--
 @include('includes.home-catalog')
+--}}
