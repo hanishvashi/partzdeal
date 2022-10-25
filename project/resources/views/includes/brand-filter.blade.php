@@ -26,6 +26,15 @@
   </select>
   </div>
   <div class="col-12">
+  <label for="seriesSelector">Select Series</label>
+  <select id="seriesSelector" name="select_series" class="form-control">
+  <option value="">Select Series</option>
+  <?php if(!empty($allseries)){ foreach($allseries as $series){?>
+  <option <?php if($filterdata['select_category']==$series->id){ echo 'selected'; }?> value="<?php echo $series->id;?>"><?php echo $series->series_name;?></option>
+  <?php }}?>
+  </select>
+  </div>
+  <div class="col-12">
   <label for="categoriesSelector">Select Category</label>
   <select id="categoriesSelector" name="select_category" class="form-control">
   <option value="">Select Category</option>

@@ -160,15 +160,15 @@
     <h4 class="footer_heading">ABOUT PARTZDEAL</h4>
     <ul class="footer_menu">
     <li><a href="{{route('front.page',['slug'=>'about-us'])}}">About Us</a></li>
-    <li><a href="#">Auto Parts Enquiry</a></li>
-    <li><a href="{{route('front.page',['slug'=>'disclaimer'])}}">Disclaimer</a></li>
-    <li><a href="{{route('front.contact')}}">Support</a></li>
+    <!--li><a href="#">Auto Parts Enquiry</a></li-->
+    <!--li><a href="{{route('front.contact')}}">Support</a></li-->
     </ul>
     </div>
     <div class="col-12 col-sm-6 col-md-3 mb-4 mb-md-0">
     <h4 class="footer_heading">OUR POLICY</h4>
     <ul class="footer_menu">
-    <li><a href="{{route('front.page',['slug'=>'privacy-policy'])}}">Privacy Policy</a></li>
+    <!--li><a href="{{route('front.page',['slug'=>'privacy-policy'])}}">Privacy Policy</a></li-->
+    <li><a href="{{route('front.page',['slug'=>'disclaimer'])}}">Disclaimer</a></li>
     <li><a href="{{route('front.page',['slug'=>'shipping-policy'])}}">Shipping Policy</a></li>
     <li><a href="{{route('front.page',['slug'=>'return-and-exchange-policy'])}}">Return & Exchange Policy</a></li>
     </ul>
@@ -176,9 +176,9 @@
     <div class="col-12 col-sm-6 col-md-3 mb-4 mb-sm-0">
     <h4 class="footer_heading">NEED HELP?</h4>
     <ul class="footer_menu">
-    <li><a href="{{route('front.page',['slug'=>'terms-condition'])}}">Terms & Conditions</a></li>
+    <!--li><a href="{{route('front.page',['slug'=>'terms-condition'])}}">Terms & Conditions</a></li-->
     <li><a href="{{route('front.contact')}}">Contact Us</a></li>
-    <li><a href="{{route('front.faq')}}">Faq</a></li>
+    <!--li><a href="{{route('front.faq')}}">Faq</a></li-->
     </ul>
     </div>
     <div class="col-12 col-sm-6 col-md-3 mb-0">
@@ -586,7 +586,7 @@ var checkoutbutton = '<a class="button" href="{{route("front.checkout")}}" title
       jQuery('.ajaxloadermodal').show();
     	var brandId = jQuery(this).val();
 var token = jQuery(this).find('input[name=_token]').val();
-    	/*jQuery.ajax({
+    	jQuery.ajax({
     			type: "GET",
     			url: "{{URL::to('/sidebarsearch/findseries')}}",
     			data: { bid: brandId },
@@ -595,7 +595,7 @@ var token = jQuery(this).find('input[name=_token]').val();
     				jQuery('#seriesSelector').html(resp);
     				jQuery('.ajaxloadermodal').hide();
     			}
-    		});*/
+    		});
 
         //jQuery('#cat-loader').css("display", "block");
         jQuery.ajax({

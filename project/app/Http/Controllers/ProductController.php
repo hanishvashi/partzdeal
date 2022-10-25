@@ -254,9 +254,9 @@ $statusbutton .='</ul></span>';
                 $file->move('assets/images/'.$store_code.'/products',$name);
 
                 $imagename = "thumb_".$name;
-                $file->resize(350, 350, function ($constraint) {
+                /*$file->resize(350, 350, function ($constraint) {
                 $constraint->aspectRatio();
-                })->save('assets/images/'.$store_code.'/products'.$imagename);
+                })->save('assets/images/'.$store_code.'/products'.$imagename);*/
 
                 $input['photo'] = $name;
             }
@@ -302,9 +302,9 @@ $statusbutton .='</ul></span>';
                     $file->move('assets/images/'.$store_code.'/products/gallery',$name);
 
                     $imagename = "thumb_".$name;
-                    $file->resize(350, 350, function ($constraint) {
+                    /*$file->resize(350, 350, function ($constraint) {
                     $constraint->aspectRatio();
-                  })->save('assets/images/'.$store_code.'/products/gallery'.$imagename);
+                  })->save('assets/images/'.$store_code.'/products/gallery'.$imagename);*/
 
                     $gallery['photo'] = $name;
                     $gallery['product_id'] = $lastid;
@@ -399,7 +399,7 @@ $statusbutton .='</ul></span>';
         $prod = Product::findOrFail($id);
         $sign = Currency::where('is_default','=',1)->first();
         $input = $request->all();
-
+        $store_code = $this->getStoreCode($this->getStoreid());
 		 $product_prices = array();
 			if(isset($input['product']))
 			{
@@ -489,11 +489,13 @@ $statusbutton .='</ul></span>';
             if ($file = $request->file('photo'))
             {
                 $name = time().$file->getClientOriginalName();
-                $file->move('assets/images/products',$name);
+                //$file->move('assets/images/products',$name);
+                $name = time().$file->getClientOriginalName();
+                $file->move('assets/images/'.$store_code.'/products',$name);
                 if($prod->photo != null)
                 {
-                    if (file_exists(public_path().'/assets/images/products/'.$prod->photo)) {
-                        unlink(public_path().'/assets/images/products/'.$prod->photo);
+                    if (file_exists(public_path().'assets/images/'.$store_code.'/products/'.$prod->photo)) {
+                        unlink(public_path().'/assets/images'.$store_code.'/products/'.$prod->photo);
                     }
                 }
                 $input['photo'] = $name;

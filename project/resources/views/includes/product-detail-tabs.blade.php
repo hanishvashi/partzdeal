@@ -19,9 +19,11 @@
     </div>
     <div class="tab-pane fade" id="info" role="tabpanel" aria-labelledby="info-tab">
       <h5>Disclaimer</h5>
-      <p class="pt-1">Lorem ipsum dolor sit amet consectetur adipisicing elit. Numquam, sapiente illo. Sit
-        error voluptas repellat rerum quidem, soluta enim perferendis voluptates laboriosam. Distinctio,
-        officia quis dolore quos sapiente tempore alias.</p>
+<p>Product part numbers (SKU) and OEM part numbers (SKU) are for reference purpose only.</p>
+<p>Brand logos used in the website are only for reference and recognition of the brand. They are property of the registered owners of the brand.</p>
+<p>All our products are supplied through authorized distributors, dealers or directly from the manufacturer.</p>
+<p>Product image is for reference only and actual product may differ from the photo.</p>
+<p>Product packaging is for reference only and actual packing may differ from the photo.</p>
     </div>
     <div class="tab-pane fade" id="reviews" role="tabpanel" aria-labelledby="reviews-tab">
       <h5>Product Reviews</h5>

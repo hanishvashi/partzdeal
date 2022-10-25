@@ -1541,7 +1541,10 @@ $totalPrice = $cart->totalCartAmount($cart);
       $brand_id = $_GET['bid'];
       //echo $brand_id = $request->bid;
       $allcategories = $this->getBrandCategories($brand_id);
-        return view('includes.select-category',compact('allcategories'));
+      $allseries = $this->getBrandSeries($brand_id);
+      $filterdata['select_category'] = 0;
+      $filterdata['select_sub_category'] = 0;
+        return view('includes.select-category',compact('allcategories','allseries','filterdata'));
     }
 
     public function FindSubCategories()

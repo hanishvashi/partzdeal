@@ -8,7 +8,7 @@ $x=0;
 @foreach($categories as $ctgry )
 <li>
 @if(count($ctgry['childcategories']) > 0)
-<span href="#filter{{++$x}}" aria-expanded="false" data-toggle="collapse">
+<span style="display:none" href="#filter{{++$x}}" aria-expanded="false" data-toggle="collapse">
 &nbsp;<i class="fa fa-plus"></i><i class="fa fa-minus"></i>&nbsp;&nbsp;&nbsp;
 @else
 

@@ -170,55 +170,55 @@
 
       <footer class="">
       <section class="footer-top main-footer style-two style-three">
-      <div class="container">
-      <div class="row">
-      <div class="col-12 col-sm-6 col-md-3 mb-4 mb-md-0">
-      <h4 class="footer_heading">ABOUT DURAPART</h4>
-      <ul class="footer_menu">
-      <li><a href="{{route('front.page',['slug'=>'about'])}}">About Us</a></li>
-      <li><a href="#">Auto Parts Enquiry</a></li>
-      <li><a href="#">Disclaimer</a></li>
-      <li><a href="{{route('front.contact')}}">Support</a></li>
-      </ul>
-      </div>
-      <div class="col-12 col-sm-6 col-md-3 mb-4 mb-md-0">
-      <h4 class="footer_heading">OUR POLICY</h4>
-      <ul class="footer_menu">
-      <li><a href="{{route('front.page',['slug'=>'about'])}}">Privacy Policy</a></li>
-      <li><a href="#">Shipping Policy</a></li>
-      <li><a href="#">Return & Exchange Policy</a></li>
-      </ul>
-      </div>
-      <div class="col-12 col-sm-6 col-md-3 mb-4 mb-sm-0">
-      <h4 class="footer_heading">NEED HELP?</h4>
-      <ul class="footer_menu">
-      <li><a href="#">Terms & Conditions</a></li>
-      <li><a href="{{route('front.contact')}}">Contact Us</a></li>
-      <li><a href="{{route('front.faq')}}">Faq</a></li>
-      </ul>
-      </div>
-      <div class="col-12 col-sm-6 col-md-3 mb-0">
-      <h4 class="footer_heading">Social</h4>
-      <ul class="footer_menu">
-      @if($sl->i_status == 1)
-      <li><a target="_blank" href="{{$sl->instagram}}"><img src="{{asset('assets/website/images/icon/icon-instagram.svg')}}" class="img-fluid"> Instagram</a></li>
-      @endif
-      @if($sl->f_status == 1)
-      <li><a target="_blank" href="{{$sl->facebook}}"><img src="{{asset('assets/website/images/icon/icon-facebook.svg')}}" class="img-fluid"> Facebook</a></li>
-      @endif
-      @if($sl->t_status == 1)
-      <li><a target="_blank" href="{{$sl->twiter}}"><img src="{{asset('assets/website/images/icon/icon-twitter.svg')}}" class="img-fluid"> Twitter</a></li>
-      @endif
-      @if($sl->tg_status == 1)
-      <li><a target="_blank" href="{{$sl->telegram}}"><img src="{{asset('assets/website/images/icon/icon-tumbler.svg')}}" class="img-fluid"> Tumblr</a></li>
-      @endif
-      <li><a href="#"><img src="{{asset('assets/website/images/icon/icon-pint.svg')}}" class="img-fluid"> Pinterest</a></li>
-      </ul>
-      </div>
-      </div>
-      </div>
-      </div>
-      </section>
+    <div class="container">
+    <div class="row">
+    <div class="col-12 col-sm-6 col-md-3 mb-4 mb-md-0">
+    <h4 class="footer_heading">ABOUT PARTZDEAL</h4>
+    <ul class="footer_menu">
+    <li><a href="{{route('front.page',['slug'=>'about-us'])}}">About Us</a></li>
+    <!--li><a href="#">Auto Parts Enquiry</a></li-->
+    <!--li><a href="{{route('front.contact')}}">Support</a></li-->
+    </ul>
+    </div>
+    <div class="col-12 col-sm-6 col-md-3 mb-4 mb-md-0">
+    <h4 class="footer_heading">OUR POLICY</h4>
+    <ul class="footer_menu">
+    <!--li><a href="{{route('front.page',['slug'=>'privacy-policy'])}}">Privacy Policy</a></li-->
+    <li><a href="{{route('front.page',['slug'=>'disclaimer'])}}">Disclaimer</a></li>
+    <li><a href="{{route('front.page',['slug'=>'shipping-policy'])}}">Shipping Policy</a></li>
+    <li><a href="{{route('front.page',['slug'=>'return-and-exchange-policy'])}}">Return & Exchange Policy</a></li>
+    </ul>
+    </div>
+    <div class="col-12 col-sm-6 col-md-3 mb-4 mb-sm-0">
+    <h4 class="footer_heading">NEED HELP?</h4>
+    <ul class="footer_menu">
+    <!--li><a href="{{route('front.page',['slug'=>'terms-condition'])}}">Terms & Conditions</a></li-->
+    <li><a href="{{route('front.contact')}}">Contact Us</a></li>
+    <!--li><a href="{{route('front.faq')}}">Faq</a></li-->
+    </ul>
+    </div>
+    <div class="col-12 col-sm-6 col-md-3 mb-0">
+    <h4 class="footer_heading">Social</h4>
+    <ul class="footer_menu">
+    @if($sl->i_status == 1)
+    <li><a target="_blank" href="{{$sl->instagram}}"><img src="{{asset('assets/website/images/icon/icon-instagram.svg')}}" class="img-fluid"> Instagram</a></li>
+    @endif
+    @if($sl->f_status == 1)
+    <li><a target="_blank" href="{{$sl->facebook}}"><img src="{{asset('assets/website/images/icon/icon-facebook.svg')}}" class="img-fluid"> Facebook</a></li>
+    @endif
+    @if($sl->t_status == 1)
+    <li><a target="_blank" href="{{$sl->twiter}}"><img src="{{asset('assets/website/images/icon/icon-twitter.svg')}}" class="img-fluid"> Twitter</a></li>
+    @endif
+    @if($sl->tg_status == 1)
+    <li><a target="_blank" href="{{$sl->telegram}}"><img src="{{asset('assets/website/images/icon/icon-tumbler.svg')}}" class="img-fluid"> Tumblr</a></li>
+    @endif
+    <li><a href="#"><img src="{{asset('assets/website/images/icon/icon-pint.svg')}}" class="img-fluid"> Pinterest</a></li>
+    </ul>
+    </div>
+    </div>
+    </div>
+    </div>
+    </section>
 
       <section class="footer-middle">
       <div class="container">

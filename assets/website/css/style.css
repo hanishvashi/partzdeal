@@ -186,6 +186,7 @@ img.logo_main {
 
 .header_area .navbar ul.navbar-nav {
     width: 100%;
+    display: none;
 }
 
 .header_area .navbar ul.navbar-nav li.nav-item {

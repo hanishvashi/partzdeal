@@ -26,9 +26,27 @@ use Auth;
 use Illuminate\Http\Request;
 use Session;
 Use App\Notification;
-
+use App\Traits\StoreTrait;
+use File;
+use Image;
 class JsonRequestController extends Controller
 {
+    use StoreTrait;
+    public $store_id;
+    public $front_store_id;
+
+    public function getFrontStoreid()
+    {
+      $this->front_store_id = session('FRONT_STORE_ID');
+      return $this->front_store_id;
+    }
+    
+    public function getStoreid()
+    {
+      $this->store_id = session('CURRENT_STORE_ID');
+      return $this->store_id;
+    }
+    
     public function conv_notf()
     {
         $data = UserNotification::where('user_id','=',Auth::guard('user')->user()->id)->where('is_read','=',0)->get()->count();
@@ -323,6 +341,7 @@ $prod = Product::where('id','=',$id)->first(['slug','sku','id','user_id','name',
     }
     public function addgallery(Request $request)
     {
+        $store_code = $this->getStoreCode($this->getStoreid());
         $data = null;
         $lastid = $request->product_id;
         if ($files = $request->file('gallery')){
@@ -332,7 +351,12 @@ $prod = Product::where('id','=',$id)->first(['slug','sku','id','user_id','name',
                     {
                     $gallery = new Gallery;
                     $name = time().$file->getClientOriginalName();
-                    $file->move('assets/images/gallery',$name);
+                    $file->move('assets/images/'.$store_code.'/products/gallery',$name);
+                    $imagename = "thumb_".$name;
+                    /*$file->resize(350, 350, function ($constraint) {
+                    $constraint->aspectRatio();
+                  })->save('assets/images/'.$store_code.'/products/gallery/'.$imagename);*/
+                    //$file->move('assets/images/gallery',$name);
                     $gallery['photo'] = $name;
                     $gallery['product_id'] = $lastid;
                     $gallery->save();
@@ -344,11 +368,11 @@ $prod = Product::where('id','=',$id)->first(['slug','sku','id','user_id','name',
     }
     public function delgallery()
     {
-
+        $store_code = $this->getStoreCode($this->getStoreid());
         $id = $_GET['id'];
         $gal = Gallery::findOrFail($id);
-                    if (file_exists(public_path().'/assets/images/gallery/'.$gal->photo)) {
-                        unlink(public_path().'/assets/images/gallery/'.$gal->photo);
+                    if (file_exists(public_path().'/assets/images/'.$store_code.'/products/gallery/'.$gal->photo)) {
+                        unlink(public_path().'/assets/images/'.$store_code.'/products/gallery/'.$gal->photo);
                     }
         $gal->delete();
 
@@ -641,9 +665,11 @@ $prod = Product::where('id','=',$id)->first(['slug','sku','id','user_id','name',
     public function suggest()
     {
         $search = $_GET['search'];
-        $data = Product::where('name', 'like', '%' . $search . '%')
-                ->orWhere('sku', 'like', '%' . $search . '%')
-                ->where('status','=',1)->orderBy('id','desc')->take(10)->get();
+        $data = Product::where('status','=',1)->where('store_id','=',$this->getFrontStoreid())
+                ->where(function($query) use ($search) {
+                    $query->where('name', 'like', '%' . $search . '%')
+                        ->orWhere('sku', 'like', '%' . $search . '%');
+                })->orderBy('id','desc')->take(10)->get();
         foreach($data as $key => $value)
         {
             if($value->user_id != 0)
