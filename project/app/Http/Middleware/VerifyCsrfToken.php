@@ -15,6 +15,7 @@ class VerifyCsrfToken extends BaseVerifier
         //
         '/payment/notify',
         '/user/paypal/notify',
-        '/payu-response'
+        '/payu-response',
+        '/payu-cancel'
     ];
 }

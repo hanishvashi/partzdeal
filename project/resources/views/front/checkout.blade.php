@@ -224,7 +224,7 @@
 											<div class="order-item">
 												<div class="product-img">
 													<div class="d-flex">
-														<img src=" {{ asset('assets/images/products/'.$product['item']['photo']) }}"
+														<img src=" {{ asset('assets/images/'.$store_code.'/products/'.$product['item']['photo']) }}"
 															height="80" width="80" class="p-1">
 
 													</div>

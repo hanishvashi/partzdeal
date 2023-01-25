@@ -40,20 +40,19 @@
                                             </div>
                                           </div>
 
-                      <div class="form-group">
-
-                      <label class="control-label col-sm-4" for="paypal_type">{{ __('Paypal') }}</label>
-                      <div class="col-sm-6">
+                        <div class="form-group">
+                        <label class="control-label col-sm-4" for="paypal_type">{{ __('Paypal') }}</label>
+                        <div class="col-sm-6">
                         <span class="dropdown">
-            <button id="paypal_type" class="btn btn-{{$gs->paypal_check == 1 ? 'primary':'danger'}} product-btn dropdown-toggle btn-xs" type="button" data-toggle="dropdown" style="font-size: 14px;">{{$gs->paypal_check == 1 ? 'Activated':'Deactivated'}}
-                <span class="caret"></span></button>
+                        <button id="paypal_type" class="btn btn-{{$gs->paypal_check == 1 ? 'primary':'danger'}} product-btn dropdown-toggle btn-xs" type="button" data-toggle="dropdown" style="font-size: 14px;">{{$gs->paypal_check == 1 ? 'Activated':'Deactivated'}}
+                        <span class="caret"></span></button>
                         <ul class="dropdown-menu">
-                            <li><a href="{{route('admin-gs-paypal',1)}}">Active</a></li>
-                            <li><a href="{{route('admin-gs-paypal',0)}}">Deactive</a></li>
+                        <li><a href="{{route('admin-gs-paypal',1)}}">Active</a></li>
+                        <li><a href="{{route('admin-gs-paypal',0)}}">Deactive</a></li>
                         </ul>
                         </span>
-                      </div>
-                      </div>
+                        </div>
+                        </div>
 
 
                         <div class="form-group">
@@ -69,6 +68,30 @@
                             <textarea class="form-control" name="paypal_text" id="paypal_text" placeholder="{{ __('Paypal Text') }}">{{ $gs->paypal_text }}</textarea>
                           </div>
                         </div>
+<hr>       
+                <div class="form-group">
+                <label class="control-label col-sm-4" for="payu_merchant_key">{{ __('Payu Merchant Key') }}</label>
+                <div class="col-sm-6">
+                <input type="text" class="form-control" placeholder="{{ __('Payu Merchant Key') }}" name="payu_merchant_key" value="{{ $gs->payu_merchant_key }}" required="">
+                </div>
+                </div>
+                
+                <div class="form-group">
+                <label class="control-label col-sm-4" for="payu_merchant_salt">{{ __('Payu Merchant Salt') }}</label>
+                <div class="col-sm-6">
+                <input type="text" class="form-control" placeholder="{{ __('Payu Merchant Salt') }}" name="payu_merchant_salt" value="{{ $gs->payu_merchant_salt }}" required="">
+                </div>
+                </div>
+                
+                <div class="form-group">
+                <label class="control-label col-sm-4" for="payu_sandbox">{{ __('Payu Payment Mode') }}</label>
+                <div class="col-sm-6">
+                    <select class="form-control" name="payu_sandbox">
+                        <option value="0" {{$gs->payu_sandbox == 0 ? 'selected':''}}>Live</option>
+                        <option value="1" {{$gs->payu_sandbox == 1 ? 'selected':''}}>Sandbox</option>
+                    </select>
+                </div>
+                </div>
 <hr>
 
                                           <div class="form-group">

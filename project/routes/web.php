@@ -593,7 +593,7 @@ Route::post('/product/create2', 'UserProductController@store2')->name('user-prod
  Route::post('/paypal-submit', 'Front\PaymentController@store')->name('paypal.submit');
 
  Route::post('/payu-process', 'Front\PaymentController@processPayuPayment')->name('payu.submit');
- Route::get('/payu-cancel', 'Front\PaymentController@payuSubscribeCancel')->name('payu.cancel');
+ Route::post('/payu-cancel', 'Front\PaymentController@payuSubscribeCancel')->name('payu.cancel');
  Route::post('/payu-response', 'Front\PaymentController@payuResponse')->name('payu.response');
 
  Route::post('/gateway', 'Front\CheckoutController@gateway')->name('gateway.submit');

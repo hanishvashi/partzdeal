@@ -7,24 +7,33 @@ use App\Generalsetting;
 use Illuminate\Support\Facades\Session;
 use App\Http\Requests\StoreValidationRequest;
 use Carbon\Carbon;
+use App\Traits\StoreTrait;
 
 class GeneralSettingController extends Controller
 {
+    use StoreTrait;
+    public $store_id;
     public function __construct()
     {
         $this->middleware('auth:admin');
     }
+    
+    public function getStoreid()
+    {
+      $this->store_id = session('CURRENT_STORE_ID');
+      return $this->store_id;
+    }
 
     public function logo()
     {
-        $data = Generalsetting::findOrFail(1);
+        $data = Generalsetting::where('store_id',$this->getStoreid())->first();
         return view('admin.generalsetting.logo',compact('data'));
     }
 
     public function logoup(StoreValidationRequest $request)
     {
         $input = $request->all();
-        $logo = Generalsetting::findOrFail(1);
+        $logo = Generalsetting::where('store_id',$this->getStoreid())->first();
             if ($file = $request->file('logo'))
             {
                 $name = time().$file->getClientOriginalName();
@@ -57,7 +66,7 @@ class GeneralSettingController extends Controller
     }
     public function popup()
     {
-        $data = Generalsetting::findOrFail(1);
+        $data = Generalsetting::where('store_id',$this->getStoreid())->first();
         return view('admin.generalsetting.popup',compact('data'));
     }
 
@@ -67,7 +76,7 @@ class GeneralSettingController extends Controller
         if ($request->is_subscribe == ""){
             $input['is_subscribe'] = 0;
         }
-        $logo = Generalsetting::findOrFail(1);
+        $logo = Generalsetting::where('store_id',$this->getStoreid())->first();
             if ($file = $request->file('subscribe_image'))
             {
                 $name = time().$file->getClientOriginalName();
@@ -86,14 +95,14 @@ class GeneralSettingController extends Controller
     }
   public function fav()
     {
-        $data = Generalsetting::findOrFail(1);
+        $data = Generalsetting::where('store_id',$this->getStoreid())->first();
         return view('admin.generalsetting.favicon',compact('data'));
     }
 
     public function favup(StoreValidationRequest $request)
     {
         $input = $request->all();
-        $fav = Generalsetting::findOrFail(1);
+        $fav = Generalsetting::where('store_id',$this->getStoreid())->first();
             if ($file = $request->file('favicon'))
             {
                 $name = time().$file->getClientOriginalName();
@@ -115,7 +124,7 @@ class GeneralSettingController extends Controller
     //Upadte FAQ Page Section Settings
     public function lungup($status)
     {
-        $page = Generalsetting::findOrFail(1);
+        $page = Generalsetting::where('store_id',$this->getStoreid())->first();
         $page->is_language = $status;
         $page->update();
         Session::flash('success', 'Language Status Updated Successfully.');
@@ -124,7 +133,7 @@ class GeneralSettingController extends Controller
 
   public function reg()
     {
-        $data = Generalsetting::findOrFail(1);
+        $data = Generalsetting::where('store_id',$this->getStoreid())->first();
         return view('admin.vendor.status',compact('data'));
     }
 
@@ -132,7 +141,7 @@ class GeneralSettingController extends Controller
     {
 
 
-        $page = Generalsetting::findOrFail(1);
+        $page = Generalsetting::where('store_id',$this->getStoreid())->first();
         $page->reg_vendor = $status;
         $page->update();
         Session::flash('success', 'Vendor Registration Status Upated Successfully.');
@@ -141,7 +150,7 @@ class GeneralSettingController extends Controller
     public function paypal($status)
     {
 
-        $page = Generalsetting::findOrFail(1);
+        $page = Generalsetting::where('store_id',$this->getStoreid())->first();
         $page->paypal_check = $status;
         $page->update();
         Session::flash('success', 'Paypal Status Upated Successfully.');
@@ -151,7 +160,7 @@ class GeneralSettingController extends Controller
 	public function razorpay($status)
     {
 
-        $page = Generalsetting::findOrFail(1);
+        $page = Generalsetting::where('store_id',$this->getStoreid())->first();
         $page->razorcheck = $status;
         $page->update();
         Session::flash('success', 'Razorpay Status Upated Successfully.');
@@ -161,7 +170,7 @@ class GeneralSettingController extends Controller
 	public function razorpaysandboxcheck($status)
     {
 
-        $page = Generalsetting::findOrFail(1);
+        $page = Generalsetting::where('store_id',$this->getStoreid())->first();
         $page->razorpay_sandbox_check = $status;
         $page->update();
         Session::flash('success', 'Razorpay Payment Type Upated Successfully.');
@@ -172,7 +181,7 @@ class GeneralSettingController extends Controller
     public function rtl($status)
     {
 
-        $page = Generalsetting::findOrFail(1);
+        $page = Generalsetting::where('store_id',$this->getStoreid())->first();
         $page->rtl = $status;
         $page->update();
         Session::flash('success', 'RTL Status Upated Successfully.');
@@ -181,7 +190,7 @@ class GeneralSettingController extends Controller
     public function stripe($status)
     {
 
-        $page = Generalsetting::findOrFail(1);
+        $page = Generalsetting::where('store_id',$this->getStoreid())->first();
         $page->scheck = $status;
         $page->update();
         Session::flash('success', 'Stripe Status Upated Successfully.');
@@ -190,7 +199,7 @@ class GeneralSettingController extends Controller
     public function guest($status)
     {
 
-        $page = Generalsetting::findOrFail(1);
+        $page = Generalsetting::where('store_id',$this->getStoreid())->first();
         $page->guest_checkout = $status;
         $page->update();
         Session::flash('success', 'Guest Checkout Status Upated Successfully.');
@@ -199,7 +208,7 @@ class GeneralSettingController extends Controller
     public function cod($status)
     {
 
-        $page = Generalsetting::findOrFail(1);
+        $page = Generalsetting::where('store_id',$this->getStoreid())->first();
         $page->ccheck = $status;
         $page->update();
         Session::flash('success', 'Cash On Delivery Status Upated Successfully.');
@@ -207,7 +216,7 @@ class GeneralSettingController extends Controller
     }
     public function comment($status)
     {
-        $page = Generalsetting::findOrFail(1);
+        $page = Generalsetting::where('store_id',$this->getStoreid())->first();
         $page->is_comment = $status;
         $page->update();
         Session::flash('success', 'Comment Status Upated Successfully.');
@@ -215,7 +224,7 @@ class GeneralSettingController extends Controller
     }
     public function isaffilate($status)
     {
-        $page = Generalsetting::findOrFail(1);
+        $page = Generalsetting::where('store_id',$this->getStoreid())->first();
         $page->is_affilate = $status;
         $page->update();
         Session::flash('success', 'Affilate Status Upated Successfully.');
@@ -223,7 +232,7 @@ class GeneralSettingController extends Controller
     }
     public function issmtp($status)
     {
-        $page = Generalsetting::findOrFail(1);
+        $page = Generalsetting::where('store_id',$this->getStoreid())->first();
         $page->is_smtp = $status;
         $page->update();
         Session::flash('success', 'SMTP Status Upated Successfully.');
@@ -231,7 +240,7 @@ class GeneralSettingController extends Controller
     }
     public function talkto($status)
     {
-        $page = Generalsetting::findOrFail(1);
+        $page = Generalsetting::where('store_id',$this->getStoreid())->first();
         $page->is_talkto = $status;
         $page->update();
         Session::flash('success', 'Tawk.to Status Upated Successfully.');
@@ -239,7 +248,7 @@ class GeneralSettingController extends Controller
     }
     public function issubscribe($status)
     {
-        $page = Generalsetting::findOrFail(1);
+        $page = Generalsetting::where('store_id',$this->getStoreid())->first();
         $page->is_subscribe = $status;
         $page->update();
         Session::flash('success', 'Subscribe PopUp Status Upated Successfully.');
@@ -247,7 +256,7 @@ class GeneralSettingController extends Controller
     }
     public function isloader($status)
     {
-        $page = Generalsetting::findOrFail(1);
+        $page = Generalsetting::where('store_id',$this->getStoreid())->first();
         $page->is_loader = $status;
         $page->update();
         Session::flash('success', 'Loader Status Upated Successfully.');
@@ -255,7 +264,7 @@ class GeneralSettingController extends Controller
     }
     public function bgimg()
     {
-        $data = Generalsetting::findOrFail(1);
+        $data = Generalsetting::where('store_id',$this->getStoreid())->first();
         return view('admin.generalsetting.backgroundimage',compact('data'));
     }
 
@@ -267,7 +276,7 @@ class GeneralSettingController extends Controller
                'bgimg.mimes' => 'The Image type is invalid.'
             ]);
         $input = $request->all();
-        $bgimg = Generalsetting::findOrFail(1);
+        $bgimg = Generalsetting::where('store_id',$this->getStoreid())->first();
             if ($file = $request->file('bgimg'))
             {
                 $name = time().$file->getClientOriginalName();
@@ -288,7 +297,7 @@ class GeneralSettingController extends Controller
 
     public function affilate()
     {
-        $data = Generalsetting::findOrFail(1);
+        $data = Generalsetting::where('store_id',$this->getStoreid())->first();
         return view('admin.generalsetting.affilate',compact('data'));
     }
 
@@ -300,7 +309,7 @@ class GeneralSettingController extends Controller
                'affilate_banner.mimes' => 'The Image type is invalid.'
             ]);
         $input = $request->all();
-        $data = Generalsetting::findOrFail(1);
+        $data = Generalsetting::where('store_id',$this->getStoreid())->first();
             if ($file = $request->file('affilate_banner'))
             {
                 $name = time().$file->getClientOriginalName();
@@ -320,7 +329,7 @@ class GeneralSettingController extends Controller
 
     public function cimg()
     {
-        $data = Generalsetting::findOrFail(1);
+        $data = Generalsetting::where('store_id',$this->getStoreid())->first();
         return view('admin.generalsetting.customerimg',compact('data'));
     }
 
@@ -332,7 +341,7 @@ class GeneralSettingController extends Controller
                'cimg.mimes' => 'The Image type is invalid.'
             ]);
         $input = $request->all();
-        $cimg = Generalsetting::findOrFail(1);
+        $cimg = Generalsetting::where('store_id',$this->getStoreid())->first();
             if ($file = $request->file('cimg'))
             {
                 $name = time().$file->getClientOriginalName();
@@ -352,7 +361,7 @@ class GeneralSettingController extends Controller
 
     public function countdown()
     {
-        $data = Generalsetting::findOrFail(1);
+        $data = Generalsetting::where('store_id',$this->getStoreid())->first();
         return view('admin.count.index',compact('data'));
     }
 
@@ -364,7 +373,7 @@ class GeneralSettingController extends Controller
                'count_image.mimes' => 'The Image type is invalid.'
             ]);
         $input = $request->all();
-        $cimg = Generalsetting::findOrFail(1);
+        $cimg = Generalsetting::where('store_id',$this->getStoreid())->first();
         if ($file = $request->file('count_image'))
         {
             $name = time().$file->getClientOriginalName();
@@ -386,7 +395,7 @@ class GeneralSettingController extends Controller
 
     public function contents()
     {
-        $data = Generalsetting::findOrFail(1);
+        $data = Generalsetting::where('store_id',$this->getStoreid())->first();
         if($data->tags != null)
         {
             $tags = explode(',', $data->tags);
@@ -403,7 +412,7 @@ class GeneralSettingController extends Controller
            ],[
                'bimg.mimes' => 'The Image type is invalid.'
             ]);
-        $content = Generalsetting::findOrFail(1);
+        $content = Generalsetting::where('store_id',$this->getStoreid())->first();
         $data = $request->all();
         if (!empty($request->tags))
          {
@@ -436,13 +445,13 @@ class GeneralSettingController extends Controller
 
     public function payments()
     {
-        $data = Generalsetting::findOrFail(1);
+        $data = Generalsetting::where('store_id',$this->getStoreid())->first(); //findOrFail(1);
         return view('admin.generalsetting.payments',compact('data'));
     }
 
     public function paymentsup(Request $request)
     {
-        $data = Generalsetting::findOrFail(1);
+        $data = Generalsetting::where('store_id',$this->getStoreid())->first();;
         if ($request->ship_info == ""){
             $data['ship_info'] = 0;
         }
@@ -456,7 +465,7 @@ class GeneralSettingController extends Controller
 
     public function about()
     {
-        $data = Generalsetting::findOrFail(1);
+        $data = Generalsetting::where('store_id',$this->getStoreid())->first();
         return view('admin.generalsetting.about',compact('data'));
     }
 
@@ -467,7 +476,7 @@ class GeneralSettingController extends Controller
            ],[
                'footer_background.mimes' => 'The Image type is invalid.'
             ]);
-        $data = Generalsetting::findOrFail(1);
+        $data = Generalsetting::where('store_id',$this->getStoreid())->first();
         $input = $request->all();
                 if ($file = $request->file('footer_background'))
                 {
@@ -488,13 +497,13 @@ class GeneralSettingController extends Controller
 
     public function successm()
     {
-        $data = Generalsetting::findOrFail(1);
+        $data = Generalsetting::where('store_id',$this->getStoreid())->first();
         return view('admin.generalsetting.success',compact('data'));
     }
 
     public function successmup(Request $request)
     {
-        $address = Generalsetting::findOrFail(1);
+        $address = Generalsetting::where('store_id',$this->getStoreid())->first();
         $address->update($request->all());
         Session::flash('success', 'Data Updated Successfully.');
         return redirect()->route('admin-gs-successm');
@@ -502,14 +511,14 @@ class GeneralSettingController extends Controller
 
     public function bginfo()
     {
-        $data = Generalsetting::findOrFail(1);
+        $data = Generalsetting::where('store_id',$this->getStoreid())->first();
 		$tags = array();
         return view('admin.generalsetting.bg-info',compact('data','tags'));
     }
 
     public function bginfoup(Request $request)
     {
-        $bginfo = Generalsetting::findOrFail(1);
+        $bginfo = Generalsetting::where('store_id',$this->getStoreid())->first();
         $data = $request->all();
         if ($request->slider == ""){
             $data['slider'] = 0;
@@ -551,7 +560,7 @@ class GeneralSettingController extends Controller
 
     public function video()
     {
-        $data = Generalsetting::findOrFail(1);
+        $data = Generalsetting::where('store_id',$this->getStoreid())->first();
         return view('admin.generalsetting.video',compact('data'));
     }
 
@@ -562,7 +571,7 @@ class GeneralSettingController extends Controller
            ],[
                'vidimg.mimes' => 'The Image type is invalid.'
             ]);
-        $data = Generalsetting::findOrFail(1);
+        $data = Generalsetting::where('store_id',$this->getStoreid())->first();
         $url = $request->vid;
 
         if ( (strpos($url, 'youtube') !== false) || (strpos($url, 'vimeo') !== false) )
@@ -591,7 +600,7 @@ class GeneralSettingController extends Controller
     }
   public function load()
     {
-        $data = Generalsetting::findOrFail(1);
+        $data = Generalsetting::where('store_id',$this->getStoreid())->first();
         return view('admin.generalsetting.loader',compact('data'));
     }
 
@@ -601,7 +610,7 @@ class GeneralSettingController extends Controller
                'loader' => 'mimes:gif'
            ]);
         $input = $request->all();
-        $fav = Generalsetting::findOrFail(1);
+        $fav = Generalsetting::where('store_id',$this->getStoreid())->first();
             if ($file = $request->file('loader'))
             {
                 $name = time().$file->getClientOriginalName();
