@@ -237,15 +237,27 @@ class FrontendController extends Controller
 
   public function CountResultSubCat($category_id,$min,$max)
 	{
+	    if (Session::has('FRONT_STORE_ID')){
+        $storeid =  $this->store_id = session('FRONT_STORE_ID');
+        $store_code = $this->store_code = session('FRONT_STORE_CODE');
+        }else{
+        //$ip = '203.192.237.76'; /* Static IP address */
+        $ip = $_SERVER['REMOTE_ADDR'];
+        $storeinfo = $this->getCurrentStoreLocation($ip);
+        $storeid = $this->store_id = $storeinfo->id;
+        $store_code = $this->store_code = $storeinfo->store_code;
+        session()->put('FRONT_STORE_CODE', $store_code);
+        session()->put('FRONT_STORE_ID', $this->store_id);
+        }
 
 		$count  = DB::table('products')
 			->select('products.*')
-			->where('products.status',1)->where('products.is_approve',1)->where('products.subcategory_id',$category_id)->where('products.store_id',$this->store_id)->get();
+			->where('products.status',1)->where('products.is_approve',1)->where('products.subcategory_id',$category_id)->where('products.store_id',$storeid)->get();
 		if(!empty($min) || !empty($min))
         {
 			$count = DB::table('products')
 			->select('products.*')
-			->where('products.status',1)->where('products.is_approve',1)->where('products.subcategory_id',$category_id)->whereBetween('products.cprice', [$min, $max])->where('products.store_id',$this->store_id)->get();
+			->where('products.status',1)->where('products.is_approve',1)->where('products.subcategory_id',$category_id)->whereBetween('products.cprice', [$min, $max])->where('products.store_id',$storeid)->get();
 		  }
 		return count($count);
 	}
@@ -283,10 +295,23 @@ class FrontendController extends Controller
 
     public function getProductsBySubCatId($catid,$limit,$offset,$sort,$minprice,$maxprice)
     {
+        if (Session::has('FRONT_STORE_ID')){
+        $storeid =  $this->store_id = session('FRONT_STORE_ID');
+        $store_code = $this->store_code = session('FRONT_STORE_CODE');
+        }else{
+        //$ip = '203.192.237.76'; /* Static IP address */
+        $ip = $_SERVER['REMOTE_ADDR'];
+        $storeinfo = $this->getCurrentStoreLocation($ip);
+        $storeid = $this->store_id = $storeinfo->id;
+        $store_code = $this->store_code = $storeinfo->store_code;
+        session()->put('FRONT_STORE_CODE', $store_code);
+        session()->put('FRONT_STORE_ID', $this->store_id);
+        }
+        
       $cats = DB::table('products')
   			->select('products.*')
-  			->where('products.status',1)->where('products.is_approve',1)->where('products.subcategory_id',$catid)
-        ->whereBetween('products.cprice', [$minprice, $maxprice]);;
+  			->where('products.status',1)->where('products.store_id',$storeid)->where('products.subcategory_id',$catid)
+        ->whereBetween('products.cprice', [$minprice, $maxprice]);
         if($sort == "new")
         {
             $cats = $cats->orderBy('id','desc');
@@ -1111,7 +1136,7 @@ $totalPrice = $cart->totalCartAmount($cart);
 		return view('front.faq',compact('fq','faqs'));
 	}
 
-  public function getProductsByCatId($catid,$limit,$offset,$sort,$minprice,$maxprice,$brand_id,$subcategory_id)
+  public function getProductsByCatId($catid,$limit,$offset,$sort,$minprice,$maxprice,$brand_id,$subcategory_id,$series_id)
   {
     $cats = DB::table('products')
 			->select('products.*')
@@ -1125,6 +1150,11 @@ $totalPrice = $cart->totalCartAmount($cart);
 	if(!empty($brand_id))
         {
             $cats = $cats->where('products.brand_id', $brand_id);          
+        }
+        
+        if(!empty($series_id))
+        {
+        $cats = $cats->where('products.series_id',$series_id);
         }
 
       if($sort == "new")
@@ -1146,6 +1176,19 @@ $totalPrice = $cart->totalCartAmount($cart);
 
   public function GetMinAndMaxPrice()
   {
+      if (Session::has('FRONT_STORE_ID')){
+        $storeid =  $this->store_id = session('FRONT_STORE_ID');
+        $store_code = $this->store_code = session('FRONT_STORE_CODE');
+        }else{
+        //$ip = '203.192.237.76'; /* Static IP address */
+        $ip = $_SERVER['REMOTE_ADDR'];
+        $storeinfo = $this->getCurrentStoreLocation($ip);
+        $storeid = $this->store_id = $storeinfo->id;
+        $store_code = $this->store_code = $storeinfo->store_code;
+        session()->put('FRONT_STORE_CODE', $store_code);
+        session()->put('FRONT_STORE_ID', $this->store_id);
+        }
+        
     $minprice = Product::min('cprice');
     $maxprice = Product::max('cprice');
 
@@ -1187,7 +1230,7 @@ $totalPrice = $cart->totalCartAmount($cart);
         $sort = '';
         $limit=15;
         $offset=0;
-        $cats = $this->getProductsByCatId($cat->id,$limit,$offset,$sort,$prices['minprice'],$prices['maxprice'],0,0);
+        $cats = $this->getProductsByCatId($cat->id,$limit,$offset,$sort,$prices['minprice'],$prices['maxprice'],0,0,0);
         $total_product = $this->CountResult($cat->id,$prices['minprice'],$prices['maxprice']);
         $page = 1;
 
@@ -1598,10 +1641,10 @@ $totalPrice = $cart->totalCartAmount($cart);
           }
           //$cats = $cats->where('product_categories.category_id',$filterdata['select_category']);
         }
-        /*if(!empty($filterdata['select_series']))
+        if(!empty($filterdata['select_series']))
         {
         $cats = $cats->where('products.series_id',$filterdata['select_series']);
-        }*/
+        }
 
         if($sort == "new")
         {
@@ -1707,6 +1750,7 @@ $totalPrice = $cart->totalCartAmount($cart);
       $input = $request->all();
       $category_id = $input['category_id'];
 	  $brand_id = $input['brand_id'];
+	  $series_id = $input['series_id'];
 	  $subcategory_id = $input['subcategory_id'];
       $minprice = $input['pricemin'];
       $maxprice = $input['pricemax'];
@@ -1715,7 +1759,7 @@ $totalPrice = $cart->totalCartAmount($cart);
       $limit = 15;
       $offset = ceil($lpage * $limit);
       $sort = $input['sortby'];
-      $cats = $this->getProductsByCatId($category_id,$limit,$offset,$sort,$minprice,$maxprice,$brand_id,$subcategory_id);
+      $cats = $this->getProductsByCatId($category_id,$limit,$offset,$sort,$minprice,$maxprice,$brand_id,$subcategory_id,$series_id);
       $total_product = $this->CountResult($category_id,$minprice,$maxprice);
       return view('includes.product-grid-items',compact('page','cats','limit','total_product'));
     }

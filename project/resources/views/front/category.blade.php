@@ -194,13 +194,14 @@ function CatalogSearchfilter()
 
 	  var category_id = $("#categoriesSelector").val();
 	  var brand_id = $("#brandSelector").val();
+	  var series_id = $("#seriesSelector").val();
 	  var subcategory_id = $("#subcategoriesSelector").val();
 		var sortby = $("#sortby").val();
 		var sortby = $("#sortby").val();
 		jQuery.ajax({
               url:"{{URL::to('/json/filterproductajax')}}",
               type: "POST",
-              data: { "_token": "{{ csrf_token() }}",pricemin:pricemin,pricemax:pricemax,sortby:sortby,page:1, category_id:category_id,brand_id:brand_id,subcategory_id:subcategory_id, ajax: 'ajax'},
+              data: { "_token": "{{ csrf_token() }}",pricemin:pricemin,pricemax:pricemax,sortby:sortby,page:1, series_id:series_id,category_id:category_id,brand_id:brand_id,subcategory_id:subcategory_id, ajax: 'ajax'},
               beforeSend: function()
               {
 								jQuery('.ajaxloadermodal').show();

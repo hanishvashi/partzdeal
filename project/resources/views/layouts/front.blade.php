@@ -591,7 +591,7 @@ var token = jQuery(this).find('input[name=_token]').val();
     			url: "{{URL::to('/sidebarsearch/findseries')}}",
     			data: { bid: brandId },
     			success: function(resp) {
-            console.log(resp);
+            //console.log(resp);
     				jQuery('#seriesSelector').html(resp);
     				jQuery('.ajaxloadermodal').hide();
     			}
