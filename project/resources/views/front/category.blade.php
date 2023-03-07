@@ -157,10 +157,14 @@ loadMoreData(page);
 		var sortby = $("#sortby").val();
 		var pricemin =   $("#price-min").val();
 		var pricemax = $("#price-max").val();
+		var brand_id = $("#brandSelector").val();
+		var series_id = $("#seriesSelector").val();
+	  var subcategory_id = $("#subcategoriesSelector").val();
     jQuery.ajax({
               url:"{{URL::to('/json/filterproductajax')}}",
               type: "POST",
-              data: { "_token": "{{ csrf_token() }}",pricemin:pricemin,pricemax:pricemax,sortby:sortby,page:page, category_id:category_id, ajax: 'ajax'},
+              data: { "_token": "{{ csrf_token() }}",pricemin:pricemin,pricemax:pricemax,sortby:sortby,page:page, series_id:series_id,category_id:category_id,brand_id:brand_id,subcategory_id:subcategory_id, ajax: 'ajax'},
+              //data: { "_token": "{{ csrf_token() }}",pricemin:pricemin,pricemax:pricemax,sortby:sortby,page:page, category_id:category_id, ajax: 'ajax'},
               beforeSend: function()
               {
 								jQuery('.ajaxloadermodal').show();
