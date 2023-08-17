@@ -4,15 +4,12 @@
   <?php if($data->carrier_title=='Standard'){
     $fixedShipping	= $data->shipping_price;
     $shippingPer = $data->shipping_percentage;
-      if($totalPrice<10000){
-      $shippingCharge = ceil(($totalPrice*$shippingPer)/100);
-      /*if($shippingCharge < $fixedShipping) {
+      if($totalPrice<5000){
       $shippingCharge = $fixedShipping;
-      }*/
       $shippingChargeInEuro = $shippingCharge;
       }else{
-      //add shipping price as free for order above 50
-      $shippingChargeInEuro = 0;
+          $shippingCharge = ceil(($totalPrice*$shippingPer)/100);
+          $shippingChargeInEuro = $shippingCharge;
       }
 
     ?>

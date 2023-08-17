@@ -54,7 +54,10 @@
   </div>
     </div>
 <div class="row justify-content-center">
-<div class="col-12">
+<div class="col-6">
+<button type="button" class="btn btn-warning float-left home_brand_btn">Reset</button>
+</div>
+<div class="col-6">
 <button type="button" onclick="AdvanceSearchfilter();" class="btn btn-warning float-right home_brand_btn">Search</button>
 </div>
 </div>

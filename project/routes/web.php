@@ -612,6 +612,8 @@ Route::post('/product/create2', 'UserProductController@store2')->name('user-prod
 
   Route::post('/advance-search', 'FrontendController@AdvanceSearch')->name('advance-search-form');
 
+  Route::get('/custom-search', 'FrontendController@CustomSearch')->name('custom-search-form');
+
   Route::post('/payment', 'PaymentController@store')->name('payment.submit');
   Route::get('/payment/cancle', 'PaymentController@paycancle')->name('payment.cancle');
   Route::get('/payment/return', 'PaymentController@payreturn')->name('payment.return');

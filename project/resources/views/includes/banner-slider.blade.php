@@ -1,6 +1,6 @@
 @if($gs->slider == 1)
     <!--  Starting of homepage carousel area   -->
-<section id="home_silder" class="">
+<section id="home_silder" class="d-none">
 <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
 @php
 $i=1;

@@ -53,7 +53,7 @@ class FrontendController extends Controller
     public function __construct()
     {
         //$this->auth_guests();
-        if(isset($_SERVER['HTTP_REFERER'])){
+        /*if(isset($_SERVER['HTTP_REFERER'])){
             $referral = parse_url($_SERVER['HTTP_REFERER'], PHP_URL_HOST);
             if ($referral != $_SERVER['SERVER_NAME']){
 
@@ -95,7 +95,7 @@ class FrontendController extends Controller
                 $newbrws['total_count']= 1;
                 $newbrws->save();
             }
-        }
+        }*/
     }
 
 
@@ -235,7 +235,7 @@ class FrontendController extends Controller
 		return count($count);
 	}
 
-  public function CountResultSubCat($category_id,$min,$max)
+  public function CountResultSubCat($subcategory_id,$category_id,$brand_id,$series_id,$min,$max)
 	{
 	    if (Session::has('FRONT_STORE_ID')){
         $storeid =  $this->store_id = session('FRONT_STORE_ID');
@@ -252,29 +252,81 @@ class FrontendController extends Controller
 
 		$count  = DB::table('products')
 			->select('products.*')
-			->where('products.status',1)->where('products.is_approve',1)->where('products.subcategory_id',$category_id)->where('products.store_id',$storeid)->get();
-		if(!empty($min) || !empty($min))
+			->where('products.status',1);
+        if(!empty($category_id))
+        {
+        $count = $count->where('products.category_id', $category_id);          
+        }
+        if(!empty($subcategory_id))
+        {
+        $count = $count->where('products.subcategory_id', $subcategory_id);          
+        }
+
+        if(!empty($brand_id))
+        {
+        $count = $count->where('products.brand_id', $brand_id);          
+        }
+
+        if(!empty($series_id))
+        {
+        $count = $count->where('products.series_id',$series_id);
+        }
+        $count = $count->where('products.store_id',$storeid)->get();
+
+		/*if(!empty($min) || !empty($min))
         {
 			$count = DB::table('products')
 			->select('products.*')
 			->where('products.status',1)->where('products.is_approve',1)->where('products.subcategory_id',$category_id)->whereBetween('products.cprice', [$min, $max])->where('products.store_id',$storeid)->get();
-		  }
+		  }*/
 		return count($count);
+	}
+
+    public function getChildCategories($parent_id)
+	{
+		$childcategories = Category::where('status','=',1)->where('parent_id','=',$parent_id)->orderBy('cat_name','asc')->get();
+		
+        return $childcategories;
 	}
 
     public function subcategory(Request $request,$catslug,$subcatslug)
     {
+        if (Session::has('FRONT_STORE_ID')){
+            $storeid =  $this->store_id = session('FRONT_STORE_ID');
+            $store_code = $this->store_code = session('FRONT_STORE_CODE');
+            }else{
+            //$ip = '203.192.237.76'; /* Static IP address */
+            $ip = $_SERVER['REMOTE_ADDR'];
+            $storeinfo = $this->getCurrentStoreLocation($ip);
+            $storeid = $this->store_id = $storeinfo->id;
+            $store_code = $this->store_code = $storeinfo->store_code;
+            session()->put('FRONT_STORE_CODE', $store_code);
+            session()->put('FRONT_STORE_ID', $this->store_id);
+            }
+
         $prices = $this->GetMinAndMaxPrice();
         $sort = "";
-        $cat = Category::where('cat_slug','=',$catslug)->first();
-        $subcat = Category::where('cat_slug','=',$subcatslug)->first();
-		    $total_product = $this->CountResultSubCat($subcat->id,$prices['minprice'],$prices['maxprice']);
+        $cat = Category::where('cat_slug','=',$catslug)->where('store_id',$storeid)->first();
+        $subcat = Category::where('cat_slug','=',$subcatslug)->where('store_id',$storeid)->firstOrFail();
+
+        $brandsdata = DB::table('brands')
+  			->join('brand_categories_link', 'brand_categories_link.brand_id', '=', 'brands.id')
+  			->select('brands.*')
+  			->where('brand_categories_link.category_id',$cat->id)->orderBy('brand_name','asc')->get();
+    $filterdata['manufacturer'] = 0;
+    $filterdata['select_sub_category'] = $subcat->id;
+    $filterdata['select_category'] = $cat->id;  
+    $subcategories = $this->getChildCategories($cat->id);
+    $brand_id='';
+    $series_id='';     
+		    $total_product = $this->CountResultSubCat($subcat->id,$cat->id,$brand_id,$series_id,$prices['minprice'],$prices['maxprice']);
         $sort = '';
         $limit=15;
         $offset=0;
         $page = 1;
-        $cats = $this->getProductsBySubCatId($subcat->id,$limit,$offset,$sort,$prices['minprice'],$prices['maxprice']);
-      return view('front.sub-category',compact('prices','catslug','subcatslug','subcat','limit','page','cat','sort','cats','total_product'));
+       
+        $cats = $this->getProductsBySubCatId($subcat->id,$cat->id,$brand_id,$series_id,$limit,$offset,$sort,$prices['minprice'],$prices['maxprice']);
+      return view('front.sub-category',compact('subcategories','prices','filterdata','brandsdata','catslug','subcatslug','subcat','limit','page','cat','sort','cats','total_product'));
     }
 
     public function AjaxFilterProductSubcat(Request $request)
@@ -288,12 +340,15 @@ class FrontendController extends Controller
       $limit = 15;
       $offset = ceil($lpage * $limit);
       $sort = $input['sortby'];
-      $cats = $this->getProductsBySubCatId($category_id,$limit,$offset,$sort,$minprice,$maxprice);
-      $total_product = $this->CountResultSubCat($category_id,$minprice,$maxprice);
+      $brand_id = $input['brand_id'];
+	  $series_id = $input['series_id'];
+	  $subcategory_id = $input['subcategory_id'];
+      $cats = $this->getProductsBySubCatId($subcategory_id,$category_id,$brand_id,$series_id,$limit,$offset,$sort,$minprice,$maxprice);
+      $total_product = $this->CountResultSubCat($subcategory_id,$category_id,$brand_id,$series_id,$minprice,$maxprice);
       return view('includes.product-grid-items',compact('page','cats','limit','total_product'));
     }
 
-    public function getProductsBySubCatId($catid,$limit,$offset,$sort,$minprice,$maxprice)
+    public function getProductsBySubCatId($subcatid,$catid,$brand_id,$series_id,$limit,$offset,$sort,$minprice,$maxprice)
     {
         if (Session::has('FRONT_STORE_ID')){
         $storeid =  $this->store_id = session('FRONT_STORE_ID');
@@ -309,9 +364,27 @@ class FrontendController extends Controller
         }
         
       $cats = DB::table('products')
-  			->select('products.*')
-  			->where('products.status',1)->where('products.store_id',$storeid)->where('products.subcategory_id',$catid)
+  			->select('products.*',DB::raw('(select count(*) from galleries where product_id=products.id) as total_photo'))
+  			->where('products.status',1)->where('products.store_id',$storeid)
         ->whereBetween('products.cprice', [$minprice, $maxprice]);
+        if(!empty($catid))
+        {
+            $cats = $cats->where('products.category_id', $catid);          
+        }
+        if(!empty($subcatid))
+        {
+            $cats = $cats->where('products.subcategory_id', $subcatid);          
+        }
+		
+	if(!empty($brand_id))
+        {
+            $cats = $cats->where('products.brand_id', $brand_id);          
+        }
+        
+        if(!empty($series_id))
+        {
+        $cats = $cats->where('products.series_id',$series_id);
+        }
         if($sort == "new")
         {
             $cats = $cats->orderBy('id','desc');
@@ -322,7 +395,8 @@ class FrontendController extends Controller
         }elseif($sort == "high"){
             $cats = $cats->orderBy('products.cprice','desc');
         }else{
-            $cats = $cats->orderBy('products.id','desc');
+            //$cats = $cats->orderBy('products.id','desc');
+            $cats = $cats->orderBy('total_photo','desc');
         }
         //$cats = $cats->orderBy('products.id','desc')->paginate($limit);
        $cats = $cats->orderBy('products.id','desc')->offset($offset)->limit($limit)->get();
@@ -338,10 +412,10 @@ class FrontendController extends Controller
 		$catrow = DB::table('products')->select('products.category_id')->where('products.id',$product_id)->first();
     $catid = $catrow->category_id;
 		$relatedproducts = DB::table('products')
-			->select('products.*')->where('products.category_id',$catid)
+			->select('products.*',DB::raw('(select count(*) from galleries where product_id=products.id) as total_photo'))->where('products.category_id',$catid)
 			->where('products.status',1)->where('products.is_approve',1)->where('products.store_id',$this->store_id)
       ->where('products.id','!=',$product_id)->groupBy('products.id')
-      ->orderBy('id','desc')->offset($offset)->limit($limit)->get();
+      ->orderBy('total_photo','desc')->offset($offset)->limit($limit)->get();
 		return $relatedproducts;
 	}
 
@@ -506,7 +580,18 @@ $orders = Order::where('user_id','=',$request->user_id)->where('status','=','com
         if (Session::has('already')) {
             Session::forget('already');
         }
-        $gs = Generalsetting::findOrFail(1);
+        if (Session::has('FRONT_STORE_ID')){
+        $this->store_id = session('FRONT_STORE_ID');
+        $store_code = $this->store_code = session('FRONT_STORE_CODE');
+        }else{
+        $ip = $_SERVER['REMOTE_ADDR'];
+        $storeinfo = $this->getCurrentStoreLocation($ip);
+        $this->store_id = $storeinfo->id;
+        $store_code = $this->store_code = $storeinfo->store_code;
+        session()->put('FRONT_STORE_CODE', $store_code);
+        session()->put('FRONT_STORE_ID', $this->store_id);
+        }
+        $gs = Generalsetting::where('store_id',$this->store_id)->first();
         $dp = 1;
 		$allstates = States::where('country_id','=',101)->orderBy('name','asc')->get();
 // If a user is Authenticated then there is no problm user can go for checkout
@@ -690,7 +775,18 @@ $totalPrice = $cart->totalCartAmount($cart);
             {
                 $curr = Currency::where('is_default','=',1)->first();
             }
-        $gs = Generalsetting::findOrFail(1);
+        if (Session::has('FRONT_STORE_ID')){
+        $this->store_id = session('FRONT_STORE_ID');
+        $store_code = $this->store_code = session('FRONT_STORE_CODE');
+        }else{
+        $ip = $_SERVER['REMOTE_ADDR'];
+        $storeinfo = $this->getCurrentStoreLocation($ip);
+        $this->store_id = $storeinfo->id;
+        $store_code = $this->store_code = $storeinfo->store_code;
+        session()->put('FRONT_STORE_CODE', $store_code);
+        session()->put('FRONT_STORE_ID', $this->store_id);
+        }
+        $gs = Generalsetting::where('store_id',$this->store_id)->first();
         $oldCart = Session::get('cart');
         $cart = new Cart($oldCart);
         foreach($cart->items as $key => $prod)
@@ -753,6 +849,7 @@ $totalPrice = $cart->totalCartAmount($cart);
         $order['order_note'] = $request->order_notes;
         $order['coupon_code'] = $request->coupon_code;
         $order['coupon_discount'] = $request->coupon_discount;
+        $order['shipping_method'] = $request->shipping_method;
         $order['dp'] = $request->dp;
         $order['payment_status'] = "Pending";
         $order['currency_sign'] = $curr->sign;
@@ -807,7 +904,7 @@ $totalPrice = $cart->totalCartAmount($cart);
 
         Session::forget('cart');
         //Sending Email To Buyer
-        if($gs->is_smtp == 1)
+        /*if($gs->is_smtp == 1)
         {
         $data = [
             'to' => $request->email,
@@ -849,14 +946,64 @@ $totalPrice = $cart->totalCartAmount($cart);
            $msg = "Hello Admin!\nYour store has recieved a new order. Please login to your panel to check. \nThank you.";
             $headers = "From: ".$gs->from_name."<".$gs->from_email.">";
            mail($to,$subject,$msg,$headers);
-        }
+        }*/
+        $this->sendEmailtoCustomer($order);
+        $this->sendEmailtoAdmin($order);
 
         return redirect($success_url);
+    }
+    
+    public function sendEmailtoAdmin($order)
+    {
+        try {
+        $gs = Generalsetting::where('store_id',$this->store_id)->first();
+        $to = Pagesetting::find(1)->contact_email;
+        $subject = "Partzdeal - New Order Recieved!!";
+        $cart = unserialize(bzdecompress(utf8_decode($order->cart)));
+        $email_body = view('emails.customerorder',compact('order','gs','cart'));
+        $msg = "Hello Admin!\nYour store has recieved a new order.\nOrder Number is ".$order->order_number.".\nStore Code is ".$this->store_code.".\nPlease login to your panel to check. \nThank you.";
+        $headers = "From: ".$gs->from_name."<".$gs->from_email.">"."\r\n";
+        $headers .= "MIME-Version: 1.0\r\n";
+        $headers .= "Content-Type: text/html; charset=UTF-8\r\n";
+        mail($to,$subject,$email_body,$headers);
+    } catch (\Exception $e) {
+            Log::error($e->getMessage());
+          }
+    }
+    
+    public function sendEmailtoCustomer($order)
+    {
+        try {
+        $gs = Generalsetting::where('store_id',$this->store_id)->first();
+        $to = $order->customer_email;
+        $subject = "Partzdeal - Your Order Placed!!";
+        $cart = unserialize(bzdecompress(utf8_decode($order->cart)));
+        $email_body = view('emails.customerorder',compact('order','gs','cart'));
+        $msg = "Hello ".$order->customer_name."!\nYou have placed a new order.\nYour order number is ".$order->order_number.".Please wait for your delivery. \nThank you.";
+        $headers = "From: ".$gs->from_name."<".$gs->from_email.">"."\r\n";
+        $headers .= "MIME-Version: 1.0\r\n";
+        $headers .= "Content-Type: text/html; charset=UTF-8\r\n";
+        mail($to,$subject,$email_body,$headers);
+    } catch (\Exception $e) {
+            Log::error($e->getMessage());
+          }
+        
     }
 
     public function gateway(Request $request)
     {
-        $gs = Generalsetting::findOrFail(1);
+       if (Session::has('FRONT_STORE_ID')){
+        $this->store_id = session('FRONT_STORE_ID');
+        $store_code = $this->store_code = session('FRONT_STORE_CODE');
+        }else{
+        $ip = $_SERVER['REMOTE_ADDR'];
+        $storeinfo = $this->getCurrentStoreLocation($ip);
+        $this->store_id = $storeinfo->id;
+        $store_code = $this->store_code = $storeinfo->store_code;
+        session()->put('FRONT_STORE_CODE', $store_code);
+        session()->put('FRONT_STORE_ID', $this->store_id);
+        }
+        $gs = Generalsetting::where('store_id',$this->store_id)->first();
         if (!Session::has('cart')) {
             return redirect()->route('front.cart')->with('success',"You don't have any product to checkout.");
         }
@@ -897,7 +1044,18 @@ $totalPrice = $cart->totalCartAmount($cart);
                 }
         }
         }
-        $settings = Generalsetting::findOrFail(1);
+        if (Session::has('FRONT_STORE_ID')){
+        $this->store_id = session('FRONT_STORE_ID');
+        $store_code = $this->store_code = session('FRONT_STORE_CODE');
+        }else{
+        $ip = $_SERVER['REMOTE_ADDR'];
+        $storeinfo = $this->getCurrentStoreLocation($ip);
+        $this->store_id = $storeinfo->id;
+        $store_code = $this->store_code = $storeinfo->store_code;
+        session()->put('FRONT_STORE_CODE', $store_code);
+        session()->put('FRONT_STORE_ID', $this->store_id);
+        }
+        $settings = Generalsetting::where('store_id',$this->store_id)->first();
         $order = new Order;
         $success_url = action('PaymentController@payreturn');
         $item_name = $settings->title." Order";
@@ -935,6 +1093,7 @@ $totalPrice = $cart->totalCartAmount($cart);
         $order['payment_status'] = "Pending";
         $order['currency_sign'] = $curr->sign;
         $order['currency_value'] = $curr->value;
+        $order['store_id'] = $this->store_id;
             if (Session::has('affilate'))
             {
                 $val = $request->total / 100;
@@ -1139,7 +1298,7 @@ $totalPrice = $cart->totalCartAmount($cart);
   public function getProductsByCatId($catid,$limit,$offset,$sort,$minprice,$maxprice,$brand_id,$subcategory_id,$series_id)
   {
     $cats = DB::table('products')
-			->select('products.*')
+			->select('products.*',DB::raw('(select count(*) from galleries where product_id=products.id) as total_photo'))
 			->where('products.status',1)->where('products.is_approve',1)->where('products.category_id',$catid)
       ->whereBetween('products.cprice', [$minprice, $maxprice])->where('products.store_id',$this->store_id);
 	  if(!empty($subcategory_id))
@@ -1167,7 +1326,8 @@ $totalPrice = $cart->totalCartAmount($cart);
       }elseif($sort == "high"){
           $cats = $cats->orderBy('products.cprice','desc');
       }else{
-          $cats = $cats->orderBy('products.id','desc');
+          //$cats = $cats->orderBy('products.id','desc');
+          $cats = $cats->orderBy('total_photo', 'desc');
       }
       $cats = $cats->orderBy('products.id','desc')->offset($offset)->limit($limit)->get();
       //$cats = $cats->orderBy('products.id','desc')->paginate($limit);
@@ -1237,11 +1397,17 @@ $totalPrice = $cart->totalCartAmount($cart);
 		$filterdata['manufacturer'] = 0;
 		$filterdata['select_sub_category'] = 0;
 		$filterdata['select_category'] = $cat->id;
-		$brands = Brand::orderBy('brand_name','asc')->get();
+		//$brands = Brand::orderBy('brand_name','asc')->get();
+
+
+        $brandsdata = DB::table('brands')
+  			->join('brand_categories_link', 'brand_categories_link.brand_id', '=', 'brands.id')
+  			->select('brands.*')
+  			->where('brand_categories_link.category_id',$cat->id)->orderBy('brand_name','asc')->get();
 		
 		$subcategories = $this->getSubcategoriesBycatid($filterdata['select_category']);
 
-        return view('front.category',compact('brands','subcategories','filterdata','store_code','prices','slug','cat','sort','cats','total_product','limit','page'));
+        return view('front.category',compact('brandsdata','subcategories','filterdata','store_code','prices','slug','cat','sort','cats','total_product','limit','page'));
       }elseif(!empty($productinfo)){
         $id = $productinfo->id;
         $product = Product::findOrFail($id);
@@ -1321,7 +1487,19 @@ $totalPrice = $cart->totalCartAmount($cart);
 
     $msg = "Name: ".$your_name."\nEmail: ".$your_email."\nPhone Number: ".$your_phone."\nMessage: ".$message."\nProduct SKU: ".$product_sku."\nProduct Name: ".$product_name;
 
-    $gs = Generalsetting::findOrFail(1);
+    if (Session::has('FRONT_STORE_ID')){
+    $this->store_id = session('FRONT_STORE_ID');
+    $store_code = $this->store_code = session('FRONT_STORE_CODE');
+    }else{
+    $ip = $_SERVER['REMOTE_ADDR'];
+    $storeinfo = $this->getCurrentStoreLocation($ip);
+    $this->store_id = $storeinfo->id;
+    $store_code = $this->store_code = $storeinfo->store_code;
+    session()->put('FRONT_STORE_CODE', $store_code);
+    session()->put('FRONT_STORE_ID', $this->store_id);
+    }
+    $gs = Generalsetting::where('store_id',$this->store_id)->first();
+        
     $headers = "From: ".$gs->from_name."<".$gs->from_email.">";
     mail($to,$subject,$msg,$headers);
     $response['status'] = true;
@@ -1336,7 +1514,18 @@ $totalPrice = $cart->totalCartAmount($cart);
     {
         $user = User::findOrFail($request->user_id);
         $vendor = User::findOrFail($request->vendor_id);
-        $gs = Generalsetting::findOrFail(1);
+        if (Session::has('FRONT_STORE_ID')){
+        $this->store_id = session('FRONT_STORE_ID');
+        $store_code = $this->store_code = session('FRONT_STORE_CODE');
+        }else{
+        $ip = $_SERVER['REMOTE_ADDR'];
+        $storeinfo = $this->getCurrentStoreLocation($ip);
+        $this->store_id = $storeinfo->id;
+        $store_code = $this->store_code = $storeinfo->store_code;
+        session()->put('FRONT_STORE_CODE', $store_code);
+        session()->put('FRONT_STORE_ID', $this->store_id);
+        }
+        $gs = Generalsetting::where('store_id',$this->store_id)->first();
             $subject = $request->subject;
             $to = $vendor->email;
             $name = $request->name;
@@ -1395,7 +1584,18 @@ $totalPrice = $cart->totalCartAmount($cart);
         }
 		$ps = Pagesetting::findOrFail(1);
         $subject = "Email From Of ".$request->name;
-        $gs = Generalsetting::findOrFail(1);
+        if (Session::has('FRONT_STORE_ID')){
+        $this->store_id = session('FRONT_STORE_ID');
+        $store_code = $this->store_code = session('FRONT_STORE_CODE');
+        }else{
+        $ip = $_SERVER['REMOTE_ADDR'];
+        $storeinfo = $this->getCurrentStoreLocation($ip);
+        $this->store_id = $storeinfo->id;
+        $store_code = $this->store_code = $storeinfo->store_code;
+        session()->put('FRONT_STORE_CODE', $store_code);
+        session()->put('FRONT_STORE_ID', $this->store_id);
+        }
+        $gs = Generalsetting::where('store_id',$this->store_id)->first();
         $to = $request->to;
         $name = $request->name;
         $phone = $request->phone;
@@ -1442,7 +1642,18 @@ $totalPrice = $cart->totalCartAmount($cart);
             'email'   => 'required|email|unique:users',
             'password' => 'required|confirmed'
         ]);
-        $gs = Generalsetting::findOrFail(1);
+        if (Session::has('FRONT_STORE_ID')){
+        $this->store_id = session('FRONT_STORE_ID');
+        $store_code = $this->store_code = session('FRONT_STORE_CODE');
+        }else{
+        $ip = $_SERVER['REMOTE_ADDR'];
+        $storeinfo = $this->getCurrentStoreLocation($ip);
+        $this->store_id = $storeinfo->id;
+        $store_code = $this->store_code = $storeinfo->store_code;
+        session()->put('FRONT_STORE_CODE', $store_code);
+        session()->put('FRONT_STORE_ID', $this->store_id);
+        }
+        $gs = Generalsetting::where('store_id',$this->store_id)->first();
         $user = new User;
         $input = $request->all();
         $input['password'] = bcrypt($request['password']);
@@ -1582,12 +1793,13 @@ $totalPrice = $cart->totalCartAmount($cart);
     public function FindBrandCategories()
     {
       $brand_id = $_GET['bid'];
+      $current_category_id = $_GET['current_category_id'];
       //echo $brand_id = $request->bid;
       $allcategories = $this->getBrandCategories($brand_id);
       $allseries = $this->getBrandSeries($brand_id);
       $filterdata['select_category'] = 0;
       $filterdata['select_sub_category'] = 0;
-        return view('includes.select-category',compact('allcategories','allseries','filterdata'));
+        return view('includes.select-category',compact('allcategories','allseries','filterdata','current_category_id'));
     }
 
     public function FindSubCategories()
@@ -1664,6 +1876,41 @@ $totalPrice = $cart->totalCartAmount($cart);
           $total_product = $this->CountAdvanceResult($filterdata,'','');
 
         return view('includes.product-grid-items',compact('page','cats','limit','total_product'));
+    }
+
+    public function CustomSearch(Request $request)
+    {
+        $input = $request->all();
+        $search = $input['search'];
+        if (Session::has('FRONT_STORE_ID')){
+            $this->store_id = session('FRONT_STORE_ID');
+            $store_code = $this->store_code = session('FRONT_STORE_CODE');
+            }else{
+            //$ip = '203.192.237.76'; /* Static IP address */
+            $ip = $_SERVER['REMOTE_ADDR'];
+            $storeinfo = $this->getCurrentStoreLocation($ip);
+            $this->store_id = $storeinfo->id;
+            $store_code = $this->store_code = $storeinfo->store_code;
+            session()->put('FRONT_STORE_CODE', $store_code);
+            session()->put('FRONT_STORE_ID', $this->store_id);
+            }
+            $limit=15;
+            $offset=0;
+            $page=1;    
+        $cats = Product::where('status','=',1)->where('store_id','=',$this->store_id)
+                ->where(function($query) use ($search) {
+                    $query->where('name', 'LIKE',  '%'.$search.'%')
+                     ->orWhere('sku', 'LIKE',  '%'.$search.'%');
+                })->orderBy('id','desc')->get();
+
+        $total_product = Product::where('status','=',1)->where('store_id','=',$this->store_id)
+        ->where(function($query) use ($search) {
+        $query->where('name', 'LIKE',  '%'.$search.'%')
+        ->orWhere('sku', 'LIKE',  '%'.$search.'%');
+        })->orderBy('id','desc')->count(); 
+
+        return view('front.custom-search',compact('cats','limit','page','offset','total_product'));
+
     }
 
     public function AdvanceSearch(Request $request)
@@ -1809,7 +2056,18 @@ $totalPrice = $cart->totalCartAmount($cart);
   			$tierpriceinfo = $tierdata[$tcnt-1];
 
   			if($prod->user_id != 0){
-  			$gs = Generalsetting::findOrFail(1);
+                if (Session::has('FRONT_STORE_ID')){
+                $this->store_id = session('FRONT_STORE_ID');
+                $store_code = $this->store_code = session('FRONT_STORE_CODE');
+                }else{
+                $ip = $_SERVER['REMOTE_ADDR'];
+                $storeinfo = $this->getCurrentStoreLocation($ip);
+                $this->store_id = $storeinfo->id;
+                $store_code = $this->store_code = $storeinfo->store_code;
+                session()->put('FRONT_STORE_CODE', $store_code);
+                session()->put('FRONT_STORE_ID', $this->store_id);
+                }
+                $gs = Generalsetting::where('store_id',$this->store_id)->first();
   			$itemprice = $tierpriceinfo['price'] + $gs->fixed_commission + ($tierpriceinfo['price']/100) * $gs->percentage_commission;
   			}else{
   			$itemprice = $tierpriceinfo['price'];

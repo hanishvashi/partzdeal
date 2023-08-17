@@ -23,7 +23,7 @@ trait StoreTrait {
   {
     if($_SERVER['SERVER_NAME']=='localhost')
     {
-      return $this->getStoreDetail(1); // Set default to India on LocalHost server
+      return $this->getStoreDetail(3); // Set default to India on LocalHost server
     }else{
       $currentUserInfo = Location::get($ip);
       if($currentUserInfo->countryName=='India')
@@ -32,9 +32,13 @@ trait StoreTrait {
       }elseif($currentUserInfo->countryName=='Australia')
       {
         return $this->getStoreDetail(2);
+      }elseif($currentUserInfo->countryName=='United States')
+      {
+        return $this->getStoreDetail(3);
       }else{
         return $this->getStoreDetail(3);
       }
+      
     }
 
   }

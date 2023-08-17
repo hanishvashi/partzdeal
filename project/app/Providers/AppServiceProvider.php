@@ -142,13 +142,15 @@ class AppServiceProvider extends ServiceProvider
 		$allcategories[$key]['childcategories'] = $this->getChildCategories($category['id']);
 
 		}
+        
 		return $allcategories;
 	}
 
 	public function getChildCategories($parent_id)
 	{
-		$childcategories = Category::where('status','=',1)->where('parent_id','=',$parent_id)->orderBy('cat_name','asc')->get();
-		return $childcategories;
+		$childcategories = Category::where('status','=',1)->where('parent_id','=',$parent_id)->orderBy('cat_name','asc')->get()->toArray();
+		$child_categories= array_chunk($childcategories,4);
+        return $child_categories;
 	}
 
     /**

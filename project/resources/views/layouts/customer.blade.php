@@ -13,7 +13,7 @@
     @else
         <meta name="keywords" content="{{ $seo->meta_keys }}">
     @endif
-    <meta name="author" content="Durapart">
+    <meta name="author" content="Partzdeal">
     <title>{{$gs->title}}</title>
     <!-- Font Awesome CSS -->
 <style type="text/css">
@@ -49,7 +49,15 @@
             box-shadow: 0 0 5px #fff;
         }
     </style>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-ZRG7YBWE21"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
 
+  gtag('config', 'G-ZRG7YBWE21');
+</script>
 </head>
 <body>
     <!--  Starting of header area   -->

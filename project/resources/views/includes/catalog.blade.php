@@ -7,7 +7,7 @@
   $x=0;
   @endphp
   @foreach($brands as $brandrow )
-  <li class="<?php if($filterdata['manufacturer']==$brandrow->id){ echo 'brand_selected'; }?>">
+  <li class="<?php if(isset($filterdata['manufacturer']) && $filterdata['manufacturer']==$brandrow->id){ echo 'brand_selected'; }?>">
   <a class="home_brand_sel" data-brandid="{{$brandrow->id}}" href="javascript:void(0)">{{$brandrow->brand_name}}</a>
   </li>
   @endforeach
@@ -15,13 +15,13 @@
 <form style="" method="post" action="{{route('ajax-brand-filter')}}">
 {{csrf_field()}}
 <div class="row justify-content-center">
-  <input type="hidden" name="manufacturer" id="manufacturer" value="<?php echo $filterdata['manufacturer'];?>">
+  <input type="hidden" name="manufacturer" id="manufacturer" value="<?php if(isset($filterdata['manufacturer'])){ echo $filterdata['manufacturer']; }?>">
   <div class="col-12">
   <label for="brandSelector">Select Brand</label>
   <select id="brandSelector" name="select_brand" class="form-control">
 <option value="">Select Brand</option>
-  @foreach($brands as $brandrow)
-  <option <?php if($filterdata['manufacturer']==$brandrow->id){ echo 'selected'; }?> value="{{$brandrow->id}}">{{$brandrow->brand_name}}</option>
+  @foreach($brandsdata as $brandrow)
+  <option <?php if(isset($filterdata['manufacturer']) && $filterdata['manufacturer']==$brandrow->id){ echo 'selected'; }?> value="{{$brandrow->id}}">{{$brandrow->brand_name}}</option>
   @endforeach
   </select>
   </div>
@@ -32,35 +32,40 @@
   </select>
   </div>
   <div class="col-12">
+  <input type="hidden" name="current_category_id" id="current_category_id" value="<?php if(isset($filterdata['select_category'])){ echo $filterdata['select_category']; }?>">
   <label for="categoriesSelector">Select Category</label>
   <select id="categoriesSelector" name="select_category" class="form-control">
   <option value="">Select Category</option>
   <?php if(!empty($categories)){ foreach($categories as $category){?>
-  <option <?php if($filterdata['select_category']==$category['id']){ echo 'selected'; }?> value="<?php echo $category['id'];?>"><?php echo $category['cat_name'];?></option>
+  <option <?php if(isset($filterdata['select_category']) && $filterdata['select_category']==$category['id']){ echo 'selected'; }?> value="<?php echo $category['id'];?>"><?php echo $category['cat_name'];?></option>
   <?php }}?>
   </select>
   </div>
   <div class="col-12">
+  <input type="hidden" name="current_sub_category_id" id="current_sub_category_id" value="<?php if(isset($filterdata['select_sub_category'])){ echo $filterdata['select_sub_category']; }?>">
   <label for="subcategoriesSelector">Select Sub Category</label>
   <select id="subcategoriesSelector" name="select_sub_category" class="form-control">
   <option value="">Select Sub Category</option>
   <?php if(!empty($subcategories)){ foreach($subcategories as $subcategory){?>
-  <option <?php if($filterdata['select_sub_category']==$subcategory->id){ echo 'selected'; }?> value="<?php echo $subcategory->id;?>"><?php echo $subcategory->cat_name;?></option>
+  <option <?php if(isset($filterdata['select_sub_category']) && $filterdata['select_sub_category']==$subcategory->id){ echo 'selected'; }?> value="<?php echo $subcategory->id;?>"><?php echo $subcategory->cat_name;?></option>
   <?php }}?>
   </select>
   </div>
     </div>
-	<h4 class="heading_three mt-4 mt-md-5 mb-4 pb-2 pt-2 pr-2 pl-2">{{$lang->dosp}}</h4>
-	<div class="form-group padding-bottom-10">
+	<h4 class="d-none heading_three mt-4 mt-md-5 mb-4 pb-2 pt-2 pr-2 pl-2">{{$lang->dosp}}</h4>
+	<div class="d-none form-group padding-bottom-10">
 <input style="direction: ltr;" id="ex2" type="text" class="form-control" value="" data-slider-min="<?php echo $prices['minprice'];?>" data-slider-max="<?php echo $prices['maxprice'];?>" data-slider-step="5" data-slider-value="[{{ isset($min) ? $min:$prices['minprice']}},{{ isset($max) ? $max:$prices['maxprice']}}]"/>
 </div>
-<div class="form-group price_box">
+<div class="d-none form-group price_box">
 <input style="direction: ltr;" type="text" id="price-min" name="min" class="price-input" value="{{ isset($min) ? $min:$prices['minprice']}}">
 <i class="fa fa-minus"></i>
 <input style="direction: ltr;" type="text" id="price-max" name="max" class="price-input" value="{{ isset($max) ? $max:$prices['maxprice']}}">
 </div>
 <div class="row justify-content-center">
-<div class="col-12">
+<div class="col-6">
+<button type="button" class="btn btn-warning float-left home_brand_btn">Reset</button>
+</div>
+<div class="col-6">
 <button type="button" onclick="CatalogSearchfilter();" class="btn btn-warning float-right home_brand_btn">Search</button>
 </div>
 </div>

@@ -59,7 +59,11 @@ class CheckoutController extends Controller
     {
       $countryname =$_GET['cname'];
       $countryinfo = $this->getCountryByName($countryname);
+      if(!empty($countryinfo)){
       $allstates = States::where('country_id','=',$countryinfo->id)->orderBy('name','asc')->get();
+      }else{
+      $allstates = array();    
+      }
       return view('load.states',compact('allstates'));
     }
 

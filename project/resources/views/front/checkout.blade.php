@@ -91,7 +91,7 @@
 										<div class=" firstinfodetails billing-address">
 											<h5 class="title">Billing Details</h5>
 											<div class="row">
-												<div class="col-lg-6 {{ $digital == 1 ? 'd-none' : '' }}">
+												<div class="col-lg-6 d-none">
 													<select class="form-control" id="shipop" name="shipping" required="">
 														<option value="shipto">Billing Address</option>
 													</select>
@@ -460,10 +460,12 @@
 						<?php if ($store_code=='partzdeal-india') {?>
 							@include('load.india-shipping-method')
 						<?php }elseif($store_code=='partzdeal-australia'){?>
-							@include('load.india-shipping-method')
+							@include('load.aus-shipping-method')
 						<?php }elseif($store_code=='partzdeal-usa'){?>
-							@include('load.india-shipping-method')
-						<?php }else{?>
+							@include('load.usa-shipping-method')
+						<?php }elseif($store_code=='partzdeal-global'){ ?>
+						    @include('load.usa-shipping-method')
+						<?php } else{?>
 							@include('load.india-shipping-method')
 						<?php }?>
 						{{-- Shipping Method Area End --}}
@@ -516,6 +518,11 @@
 
 
 <script type="text/javascript">
+$(function () {
+$("#customer_country").change();
+$("#shipping_country").change();
+});
+	 
 function isNumberKey(evt)
       {
          var charCode = (evt.which) ? evt.which : event.keyCode

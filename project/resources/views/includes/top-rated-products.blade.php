@@ -23,7 +23,7 @@
 					<div class="card">
 					<div class="card-body">
           <a href="{{route('front.page',['slug' => $fprod->slug])}}">
-          <div class="card-img-actions"> <img src="{{asset('assets/images/products/thumb_'.$fprod->photo)}}" class="card-img img-fluid" alt=""> </div>
+          <div class="card-img-actions"> <img src="{{asset('assets/images/'.$store_code.'/products/thumb_'.$fprod->photo)}}" class="card-img img-fluid" alt=""> </div>
           </a>
           <input type="hidden" value="{{$fprod->id}}">
 					</div>

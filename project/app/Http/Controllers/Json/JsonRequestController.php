@@ -667,9 +667,9 @@ $prod = Product::where('id','=',$id)->first(['slug','sku','id','user_id','name',
         $search = $_GET['search'];
         $data = Product::where('status','=',1)->where('store_id','=',$this->getFrontStoreid())
                 ->where(function($query) use ($search) {
-                    $query->where('name', 'like', '%' . $search . '%')
-                        ->orWhere('sku', 'like', '%' . $search . '%');
-                })->orderBy('id','desc')->take(10)->get();
+                    $query->where('name', 'like',  $search . '%')
+                     ->orWhere('sku', 'like',  $search . '%');
+                })->orderBy('id','desc')->take(25)->get();
         foreach($data as $key => $value)
         {
             if($value->user_id != 0)

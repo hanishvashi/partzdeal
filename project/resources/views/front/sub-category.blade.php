@@ -19,12 +19,12 @@ $j=1;
 					}else{
 						$catinfo = $cat;
 					}?>
-					<input type="hidden" id="category_id" name="category_id" value="<?php echo $catinfo->id;?>">
+					<!--input type="hidden" id="category_id" name="category_id" value="<?php //echo $catinfo->id;?>"-->
           <div class="col-12 col-md-8 col-lg-9 col-xl-9">
             <div class="row">
               <div class="col-8 col-sm-7 col-lg-8 col-xl-9 align-self-center">
-                <h4 class="heading_three">{{$catinfo->cat_name}} <span class="small">{{$total_product}} Results</span></h4>
-								<p>{{$catinfo->short_description}}</p>
+                <h4 class="heading_three">{{$catinfo->cat_name}} <span class="d-none small">{{$total_product}} Results</span></h4>
+								<p class="d-none">{{$catinfo->short_description}}</p>
 							</div>
               <div class="col-12 col-sm-5 col-lg-4 col-xl-3 align-self-center text-right">
 					<select onchange="CatalogSearchfilter();" id="sortby" class="custom-select">
@@ -145,14 +145,17 @@ $j=1;
 
 
   function loadMoreData(page){
-    var category_id = $("#category_id").val();
+    var category_id = $("#categoriesSelector").val();
+    var brand_id = $("#brandSelector").val();
+    var series_id = $("#seriesSelector").val();
+    var subcategory_id = $("#subcategoriesSelector").val();
 		var sortby = $("#sortby").val();
 		var pricemin =   $("#price-min").val();
 		var pricemax = $("#price-max").val();
     jQuery.ajax({
               url:"{{URL::to('/json/subcategoryfilterproductajax')}}",
               type: "POST",
-              data: { "_token": "{{ csrf_token() }}",pricemin:pricemin,pricemax:pricemax,sortby:sortby,page:page, category_id:category_id, ajax: 'ajax'},
+              data: { "_token": "{{ csrf_token() }}",pricemin:pricemin,pricemax:pricemax,sortby:sortby,page:page, category_id:category_id,brand_id:brand_id,subcategory_id:subcategory_id,series_id:series_id, ajax: 'ajax'},
               beforeSend: function()
               {
 								jQuery('.ajaxloadermodal').show();
@@ -181,14 +184,17 @@ $j=1;
 
 function CatalogSearchfilter()
 {
-	  var category_id = $("#category_id").val();
+  var category_id = $("#categoriesSelector").val();
 		var sortby = $("#sortby").val();
 		var pricemin =   $("#price-min").val();
 		var pricemax = $("#price-max").val();
+    var brand_id = $("#brandSelector").val();
+    var series_id = $("#seriesSelector").val();
+    var subcategory_id = $("#subcategoriesSelector").val();
 		jQuery.ajax({
               url:"{{URL::to('/json/subcategoryfilterproductajax')}}",
               type: "POST",
-              data: { "_token": "{{ csrf_token() }}",pricemin:pricemin,pricemax:pricemax,sortby:sortby,page:1, category_id:category_id, ajax: 'ajax'},
+              data: { "_token": "{{ csrf_token() }}",pricemin:pricemin,pricemax:pricemax,sortby:sortby,page:1, category_id:category_id,brand_id:brand_id,subcategory_id:subcategory_id,series_id:series_id, ajax: 'ajax'},
               beforeSend: function()
               {
 								jQuery('.ajaxloadermodal').show();

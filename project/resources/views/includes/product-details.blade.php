@@ -33,7 +33,11 @@ if($product->user_id != 0){
 }
 ?>
 <li class="tier-price tier-<?php echo $key;?>">
-Buy <?php echo round($tierprice['price_qty'],0);?> or more for <span class="price">{{$curr->sign}}{{ number_format($group_price, 2) }}</span> each
+    @if($store_code=='partzdeal-india')
+    Buy <?php echo round($tierprice['price_qty'],0);?> or more for <span class="price">{{$curr->sign}}{{ number_format($group_price, 2) }}</span> each
+    @else
+    Buy <?php echo round($tierprice['price_qty'],0);?> or more for <span class="price">{{$curr->sign}}{{ $group_price }}</span> each
+    @endif
 </li>
 <?php }?>
 </ul>

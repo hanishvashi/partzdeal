@@ -39,7 +39,11 @@ $tier_prices = json_decode($prod->tier_prices,true);
 $total_t_prices = count($tier_prices);
 $lowestprice = min(array_column($tier_prices, 'price'));
 @endphp
+    @if($store_code=='partzdeal-india')
 <div class="text-muted mb-3">As Low As: {{$curr->sign}}{{ number_format($lowestprice, 2) }}</div>
+    @else
+<div class="text-muted mb-3">As Low As: {{$curr->sign}}{{ $lowestprice }}</div>    
+    @endif    
 @endif
 <div class="row nomargin">
 <div class="col-lg-6"><button type="button"  data-productid="{{$prod->id}}" class="btn bg-cart addajaxcart btn160widht"><i class="fa fa-cart-plus"></i> Add to cart</button></div>

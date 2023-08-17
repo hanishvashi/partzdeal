@@ -25,8 +25,8 @@ $j=1;
           <div class="col-12 col-md-8 col-lg-9 col-xl-9">
             <div class="row">
               <div class="col-8 col-sm-7 col-lg-8 col-xl-9 align-self-center">
-                <h4 class="heading_three">{{$catinfo->cat_name}} <span class="small">{{$total_product}} Results</span></h4>
-								<p>{{$catinfo->short_description}}</p>
+                <h4 class="heading_three">{{$catinfo->cat_name}}</h4>
+								<p class="d-none">{{$catinfo->short_description}}</p>
 							</div>
               <div class="col-12 col-sm-5 col-lg-4 col-xl-3 align-self-center text-right">
 					<select onchange="CatalogSearchfilter();" id="sortby" class="custom-select">

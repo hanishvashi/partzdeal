@@ -350,9 +350,12 @@ h2.filter-title {
 
 .product-filter-option ul li a {
     color: #333;
-    text-transform: capitalize;
+    text-transform: lowercase;
     vertical-align: middle;
     display: inline-block;
+}
+.product-filter-option ul li a::first-line{
+    text-transform: capitalize;
 }
 .product-filter-option ul li span i.fa {
     display: none;

@@ -11,7 +11,7 @@ if(!$product->galleries->isEmpty())
 @foreach($product->galleries as $gal)
 <figure class="view overlay rounded z-depth-1 main-img">
 <div class="gal-item" data-src="{{filter_var($gal->photo, FILTER_VALIDATE_URL) ?$gal->photo:asset('assets/images/'.$store_code.'/products/gallery/'.$gal->photo)}}">
-<img class="img-fluid z-depth-1" src="{{filter_var($gal->photo, FILTER_VALIDATE_URL) ?$gal->photo:asset('assets/images/'.$store_code.'/products/gallery/'.$gal->photo)}}" />
+<img class="img-fluid" src="{{filter_var($gal->photo, FILTER_VALIDATE_URL) ?$gal->photo:asset('assets/images/'.$store_code.'/products/gallery/'.$gal->photo)}}" />
 </div>
 </figure>
 @endforeach
@@ -32,7 +32,7 @@ if(!$product->galleries->isEmpty())
 @foreach($product->galleries as $gal)
 <div class="sm-gal-item">
 <a href="javascript:void(0)">
-<img width="80" src="{{asset('assets/images/products/gallery/'.$gal->photo)}}" title="The description goes here">
+<img width="80" src="{{asset('assets/images/'.$store_code.'/products/gallery/'.$gal->photo)}}" title="The description goes here">
 </a>
 </div>
 @endforeach

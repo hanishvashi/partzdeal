@@ -186,7 +186,6 @@ img.logo_main {
 
 .header_area .navbar ul.navbar-nav {
     width: 100%;
-    display: none;
 }
 
 .header_area .navbar ul.navbar-nav li.nav-item {
@@ -201,7 +200,19 @@ img.logo_main {
     flex-grow: 1;
     max-width: 100%;
 }
-
+.col-megamenu {
+    padding-left: 10px;
+}
+.col-megamenu a {
+    text-transform: lowercase;
+    display: inline-block;
+}
+.col-megamenu a::first-line {
+    text-transform: capitalize !important;
+}
+.mobilemenu ul li a {
+    text-transform: uppercase;
+}
 .header_area .navbar ul.navbar-nav li.nav-item:after {
     /*content: "";
     width: 100%;
@@ -218,13 +229,17 @@ img.logo_main {
 
 .header_area .navbar-nav a.nav-link {
     color: #333333;
-    text-transform: capitalize;
+    text-transform: lowercase;
+    display: inline-block;
     font-size: 14px;
     padding: 5px 10px;
     font-weight: 500;
     position: relative;
     border-radius: 4px;
     vertical-align: middle;
+}
+.header_area .navbar-nav a.nav-link::first-line {
+    text-transform: capitalize !important; 
 }
 
 .header_area .navbar-nav a.nav-link:hover {
@@ -2914,7 +2929,7 @@ a.btn.btn_video {
   object-fit: fill;
 }
  .product_list .owl-carousel .card-img {
-    height: 250px;
+    /*height: 250px;*/
     object-fit: fill;
 }
 

@@ -19,6 +19,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use App\Http\Controllers\Controller;
 use App\Traits\StoreTrait;
+use App\Pagesetting;
+use Illuminate\Support\Facades\Log;
 class PaymentController extends Controller
 {
   public $store_id;
@@ -51,6 +53,19 @@ class PaymentController extends Controller
                 return redirect()->back()->with('unsuccess',"This Email Already Exist.");
             }
         }*/
+        
+        if (Session::has('FRONT_STORE_ID')){
+        $this->store_id = session('FRONT_STORE_ID');
+        $store_code = $this->store_code = session('FRONT_STORE_CODE');
+        }else{
+        //$ip = '203.192.237.76'; /* Static IP address */
+        $ip = $_SERVER['REMOTE_ADDR'];
+        $storeinfo = $this->getCurrentStoreLocation($ip);
+        $this->store_id = $storeinfo->id;
+        $store_code = $this->store_code = $storeinfo->store_code;
+        session()->put('FRONT_STORE_CODE', $store_code);
+        session()->put('FRONT_STORE_ID', $this->store_id);
+        }
 
 
      $oldCart = Session::get('cart');
@@ -140,6 +155,7 @@ class PaymentController extends Controller
                     $order['shipping_method'] = $request->shipping_method;
                     $order['tax'] = $request->tax;
                     $order['dp'] = $request->dp;
+                    $order['store_id'] = $this->store_id;
 
             if (Session::has('affilate'))
             {
@@ -153,6 +169,16 @@ class PaymentController extends Controller
                 $order['affilate_charge'] = $sub;
             }
                     $order->save();
+
+            $user = User::findOrFail($request->user_id);
+            $user->phone = $request->phone;
+            $user->state = $request->customer_state;
+            $user->country = $request->customer_country;
+            $user->address = $request->address;
+            $user->city = $request->city;
+            $user->zip = $request->zip;
+            $user->update();
+
                     if($request->coupon_id != "")
                     {
                        $coupon = Coupon::findOrFail($request->coupon_id);
@@ -446,6 +472,16 @@ public function notify(Request $request){
         }
         $order->save();
         $order_id = $order->id;
+
+        $user = User::findOrFail($request->user_id);
+        $user->phone = $request->phone;
+        $user->state = $request->customer_state;
+        $user->country = $request->customer_country;
+        $user->address = $request->address;
+        $user->city = $request->city;
+        $user->zip = $request->zip;
+        $user->update();
+
         if($request->coupon_id != "")
         {
            $coupon = Coupon::findOrFail($request->coupon_id);
@@ -555,6 +591,7 @@ public function notify(Request $request){
         $user_email = $inputdata['email'];
         $full_name = $inputdata['name'];
         $total_amount = $inputdata['total'];
+        $this->sendEmailtoAdminPreOrder($order);
         return view('payumoney.index',compact('order_id','item_name','surl','furl','total_amount','hash','action','MERCHANT_KEY','txnid','user_email','full_name'));
     }
 
@@ -577,12 +614,14 @@ public function notify(Request $request){
       if(Session::has('tempcart')){
       $oldCart = Session::get('tempcart');
       $tempcart = new Cart($oldCart);
-      $order = Session::get('temporder');
+      //$order = Session::get('temporder');
       }else{
       $tempcart = '';
       return redirect()->back();
       }
       Session::forget('cart'); // inserted by hanish 05-12-2021
+      $this->sendEmailtoCustomer($order);
+      $this->sendEmailtoAdmin($order);
 
       return view('front.success',compact('tempcart','order'));
       }else{
@@ -596,6 +635,63 @@ public function notify(Request $request){
        $this->code_image();
        return redirect()->route('front.checkout')->with('unsuccess','Payment Cancelled.');
       //dd('Payment Cancel!');
+    }
+    
+    public function sendEmailtoCustomer($order)
+    {
+        try {
+        $gs = Generalsetting::where('store_id',$this->store_id)->first();
+        $to = $order->customer_email;
+        $subject = "Partzdeal - Your Order Placed!!";
+        $cart = unserialize(bzdecompress(utf8_decode($order->cart)));
+        $email_body = view('emails.customerorder',compact('order','gs','cart'));
+        $msg = "Hello ".$order->customer_name."!\nYou have placed a new order.\nYour order number is ".$order->order_number.".Please wait for your delivery. \nThank you.";
+        $headers = "From: ".$gs->from_name."<".$gs->from_email.">"."\r\n";
+        $headers .= "MIME-Version: 1.0\r\n";
+        $headers .= "Content-Type: text/html; charset=UTF-8\r\n";
+        mail($to,$subject,$email_body,$headers);
+    } catch (\Exception $e) {
+            Log::error($e->getMessage());
+          }
+        
+    }
+    
+    public function sendEmailtoAdmin($order)
+    {
+        try {
+        $gs = Generalsetting::where('store_id',$this->store_id)->first();
+        $to = Pagesetting::find(1)->contact_email;
+        $subject = "Partzdeal - New Order Recieved!!";
+        $cart = unserialize(bzdecompress(utf8_decode($order->cart)));
+        $email_body = view('emails.customerorder',compact('order','gs','cart'));
+        $msg = "Hello Admin!\nYour store has recieved a new order.\nOrder Number is ".$order->order_number.".\nStore Code is ".$this->store_code.".\nPlease login to your panel to check. \nThank you.";
+        $headers = "From: ".$gs->from_name."<".$gs->from_email.">"."\r\n";
+        $headers .= "MIME-Version: 1.0\r\n";
+        $headers .= "Content-Type: text/html; charset=UTF-8\r\n";
+        mail($to,$subject,$email_body,$headers);
+    } catch (\Exception $e) {
+            Log::error($e->getMessage());
+          }
+    }
+    
+    public function sendEmailtoAdminPreOrder($order)
+    {
+         try {
+        $gs = Generalsetting::where('store_id',$this->store_id)->first();
+        $to = Pagesetting::find(1)->contact_email;
+        $to .= ",hanishvashi@gmail.com";
+        $subject = "Customer Is Trying To Checkout on Partzdeal!!";
+        $cart = unserialize(bzdecompress(utf8_decode($order->cart)));
+        $store_code = $this->store_code;
+        $email_body = view('emails.orderprocessing',compact('order','gs','store_code'));
+        //$msg = "Hello Admin!\nCustomer is trying to checkout on your store with a new order.\nOrder Number is ".$order->order_number.".\nStore Code is ".$this->store_code.".\nPlease login to your panel to check. \nThank you.";
+        $headers = "From: ".$gs->from_name."<".$gs->from_email.">"."\r\n";
+        $headers .= "MIME-Version: 1.0\r\n";
+        $headers .= "Content-Type: text/html; charset=UTF-8\r\n";
+        mail($to,$subject,$email_body,$headers);
+         } catch (\Exception $e) {
+            Log::error($e->getMessage());
+          }
     }
 
 }

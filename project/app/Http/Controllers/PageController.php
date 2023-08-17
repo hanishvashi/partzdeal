@@ -4,17 +4,25 @@ namespace App\Http\Controllers;
 
 use App\Page;
 use Illuminate\Http\Request;
-
+use App\Traits\StoreTrait;
 class PageController extends Controller
 {
+    use StoreTrait;
+    public $store_id;
     public function __construct()
     {
         $this->middleware('auth:admin');
     }
  public function index()
     {
-        $pages = Page::orderBy('pos','asc')->get();
+        $pages = Page::orderBy('pos','asc')->where('store_id',$this->getStoreid())->get();
         return view('admin.page.index',compact('pages'));
+    }
+
+    public function getStoreid()
+    {
+      $this->store_id = session('CURRENT_STORE_ID');
+      return $this->store_id;
     }
 
 
@@ -47,6 +55,7 @@ class PageController extends Controller
             $data['meta_tag'] = null;
             $data['meta_description'] = null;
          }
+         $data['store_id'] = $this->getStoreid();
         $page->fill($data)->save();
         return redirect()->route('admin-page-index')->with('success','New Page Added Successfully.');
     }

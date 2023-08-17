@@ -31,25 +31,50 @@
 </a>
 </li>
 </ul>
-<div class="collapse navbar-collapse justify-content-center desktopmenu" id="navbarSupportedContent">
-<ul class="navbar-nav">
-<li class="nav-item">
-<a class="nav-link" href="{{route('front.index')}}">Home<span class="sr-only">(current)</span></a>
-</li>
-<li class="nav-item">
-<a class="nav-link" href="{{route('front.page',['slug'=>'about-us'])}}">About Us<span class="sr-only">(current)</span></a>
-</li>
-<li class="nav-item">
-<a class="nav-link" href="{{route('front.page',['slug'=>'disclaimer'])}}">Disclaimer<span class="sr-only">(current)</span></a>
-</li>
-<li class="nav-item">
-<a class="nav-link" href="{{route('front.page',['slug'=>'terms-condition'])}}">Terms & Conditions<span class="sr-only">(current)</span></a>
-</li>
-<li class="nav-item">
-<a class="nav-link" href="{{route('front.contact')}}">Contact Us<span class="sr-only">(current)</span></a>
-</li>
 
-</ul>
+
+<div class="collapse navbar-collapse justify-content-center desktopmenu" id="navbarSupportedContent">
+
+    
+    <div class="container-fluid">
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#main_nav"  aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="main_nav">
+    <ul class="navbar-nav">
+    <li class="nav-item">
+    <a class="nav-link dropdown-toggle" href="{{route('front.index')}}" >Home</a>
+    </li>
+    @foreach($categories as $category)
+    @if(count($category['childcategories']) > 0)
+    <li class="nav-item dropdown has-megamenu">
+    <a class="nav-link dropdown-toggle" href="{{route('front.page',['slug' => $category['cat_slug']])}}" data-bs-toggle="dropdown"> {{ $category['cat_name'] }}  </a>
+    <div class="dropdown-menu megamenu" role="menu">
+    <div class="row g-3">
+    @for ($i = 0; $i < count($category['childcategories']); $i++) 
+    <div class="col-lg-3 col-6">
+    <div class="col-megamenu">
+    <ul class="list-unstyled">
+    @foreach($category['childcategories'][$i] as $subcategory)
+    <li><a href="{{route('front.subcategory',['slug1'=>$category['cat_slug'],'slug2'=>$subcategory['cat_slug']])}}">{{$subcategory['cat_name']}}</a></li>
+    @endforeach
+    </ul>
+    </div>  <!-- col-megamenu.// -->
+    </div><!-- end col-3 -->
+    @endfor
+    </div><!-- end row --> 
+    </div> <!-- dropdown-mega-menu.// -->
+    </li>
+    @else
+    <li class="nav-item">
+    <a class="nav-link dropdown-toggle" href="{{route('front.page',['slug' => $category['cat_slug']])}}" > {{ $category['cat_name'] }}  </a>
+    </li>
+    @endif
+    @endforeach
+    </ul>
+    </div> <!-- navbar-collapse.// -->
+    </div> <!-- container-fluid.// -->
+
 </div>
                 					<div class="mobilemenu" id="mobilemenuContent">
                                         <ul>
@@ -80,11 +105,26 @@
 											</ul>
 											@endif
 											</li>
-                		<li class="Selected"><a href="{{route('front.index')}}">Home</a></li>
-                    <li class="Selected"><a href="{{route('front.page',['slug'=>'about-us'])}}">About Us</a></li>
-                    <li class="Selected"><a href="{{route('front.page',['slug'=>'disclaimer'])}}">Disclaimer</a></li>
-                    <li class="Selected"><a href="{{route('front.page',['slug'=>'terms-condition'])}}">Terms & Conditions</a></li>
-                    <li class="Selected"><a href="{{route('front.contact')}}">Contact Us</a></li>
+@foreach($categories as $category)
+@if(count($category['childcategories']) > 0)
+<li class="">
+<a href="{{route('front.page',['slug' => $category['cat_slug']])}}">{{ $category['cat_name'] }}</a>
+@else
+<li>
+<a href="{{route('front.page',['slug' => $category['cat_slug']])}}">{{ $category['cat_name'] }}</a>
+@endif
+
+@if(count($category['childcategories']) > 0)
+<ul>
+@for ($i = 0; $i < count($category['childcategories']); $i++)    
+@foreach($category['childcategories'][$i] as $subcategory)
+<li><a href="{{route('front.subcategory',['slug1'=>$category['cat_slug'],'slug2'=>$subcategory['cat_slug']])}}">{{$subcategory['cat_name']}} </a></li>
+@endforeach
+@endfor
+</ul>
+</li>
+@endif
+@endforeach
                                         </ul>
                                     </div>
                                 </nav>

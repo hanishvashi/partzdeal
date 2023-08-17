@@ -36,7 +36,7 @@ class ProductController extends Controller
     public function index()
     {
         $prods = Product::orderBy('id','desc')->where('store_id',$this->getStoreid())->paginate(20);
-        $sign = Currency::where('is_default','=',1)->first();
+        $sign = Currency::where('store_id',$this->getStoreid())->first();
         $cats = Category::all();
         return view('admin.product.index',compact('prods','cats','sign'));
     }
@@ -54,7 +54,7 @@ class ProductController extends Controller
 
     public function getProducts(Request $request)
     {
-      $sign = Currency::where('is_default','=',1)->first();
+      $sign = Currency::where('store_id',$this->getStoreid())->first();
 
       $draw = $request->get('draw');
       $start = $request->get("start");
@@ -146,7 +146,7 @@ $statusbutton .='</ul></span>';
     {
 
         $prods = Product::where('status','=',0)->where('store_id',$this->getStoreid())->get();
-        $sign = Currency::where('is_default','=',1)->first();
+        $sign = Currency::where('store_id',$this->getStoreid())->first();
         $cats = Category::all();
         return view('admin.product.deactive',compact('prods','cats','sign'));
     }
@@ -156,7 +156,7 @@ $statusbutton .='</ul></span>';
         $cats = Category::where('parent_id',0)->orderBy('cat_name','asc')->where('store_id',$this->getStoreid())->get();
         $brands = Brand::orderBy('brand_name','asc')->where('store_id',$this->getStoreid())->get();
         $allseries = Series::orderBy('series_name','asc')->where('store_id',$this->getStoreid())->get();
-        $sign = Currency::where('is_default','=',1)->first();
+        $sign = Currency::where('store_id',$this->getStoreid())->first();
         return view('admin.product.create',compact('brands','allseries','cats','sign'));
     }
 
@@ -175,7 +175,7 @@ $statusbutton .='</ul></span>';
                'photo' => 'required',
            ]);
         $prod = new Product;
-        $sign = Currency::where('is_default','=',1)->first();
+        $sign = Currency::where('store_id',$this->getStoreid())->first();
         $input = $request->all();
         if($this->CheckProductExist($input['sku']))
         {
@@ -254,9 +254,9 @@ $statusbutton .='</ul></span>';
                 $file->move('assets/images/'.$store_code.'/products',$name);
 
                 $imagename = "thumb_".$name;
-                /*$file->resize(350, 350, function ($constraint) {
+                $file->resize(350, 350, function ($constraint) {
                 $constraint->aspectRatio();
-                })->save('assets/images/'.$store_code.'/products'.$imagename);*/
+                })->save('assets/images/'.$store_code.'/products'.$imagename);
 
                 $input['photo'] = $name;
             }
@@ -302,9 +302,9 @@ $statusbutton .='</ul></span>';
                     $file->move('assets/images/'.$store_code.'/products/gallery',$name);
 
                     $imagename = "thumb_".$name;
-                    /*$file->resize(350, 350, function ($constraint) {
+                    $file->resize(350, 350, function ($constraint) {
                     $constraint->aspectRatio();
-                  })->save('assets/images/'.$store_code.'/products/gallery'.$imagename);*/
+                  })->save('assets/images/'.$store_code.'/products/gallery'.$imagename);
 
                     $gallery['photo'] = $name;
                     $gallery['product_id'] = $lastid;
@@ -327,7 +327,7 @@ $statusbutton .='</ul></span>';
         $subcats = Category::where('parent_id',$prod->category_id)->orderBy('cat_name','asc')->get();
 
 
-        $sign = Currency::where('is_default','=',1)->first();
+        $sign = Currency::where('store_id',$this->getStoreid())->first();
         if($prod->size != null)
         {
             $size = explode(',', $prod->size);
@@ -397,9 +397,9 @@ $statusbutton .='</ul></span>';
     public function update(UpdateValidationRequest $request, $id)
     {
         $prod = Product::findOrFail($id);
-        $sign = Currency::where('is_default','=',1)->first();
+        $sign = Currency::where('store_id',$this->getStoreid())->first();
         $input = $request->all();
-        $store_code = $this->getStoreCode($this->getStoreid());
+
 		 $product_prices = array();
 			if(isset($input['product']))
 			{
@@ -489,13 +489,11 @@ $statusbutton .='</ul></span>';
             if ($file = $request->file('photo'))
             {
                 $name = time().$file->getClientOriginalName();
-                //$file->move('assets/images/products',$name);
-                $name = time().$file->getClientOriginalName();
-                $file->move('assets/images/'.$store_code.'/products',$name);
+                $file->move('assets/images/products',$name);
                 if($prod->photo != null)
                 {
-                    if (file_exists(public_path().'assets/images/'.$store_code.'/products/'.$prod->photo)) {
-                        unlink(public_path().'/assets/images'.$store_code.'/products/'.$prod->photo);
+                    if (file_exists(public_path().'/assets/images/products/'.$prod->photo)) {
+                        unlink(public_path().'/assets/images/products/'.$prod->photo);
                     }
                 }
                 $input['photo'] = $name;

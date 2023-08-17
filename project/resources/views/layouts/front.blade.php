@@ -13,7 +13,7 @@
     @else
         <meta name="keywords" content="{{ $seo->meta_keys }}">
     @endif
-    <meta name="author" content="Durapart">
+    <meta name="author" content="Partzdeal">
     <title>{{$gs->title}}</title>
     <!-- Font Awesome CSS -->
 <!--style type="text/css">
@@ -49,7 +49,15 @@
             box-shadow: 0 0 5px #fff;
         }
     </style>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-ZRG7YBWE21"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
 
+  gtag('config', 'G-ZRG7YBWE21');
+</script>
 </head>
 <body id="sidebar-cart-curtain">
   <div id="cartoverlay" class=""><div class="ajaxloadermodal"></div></div>
@@ -354,7 +362,7 @@
                             for(var k in arr)
                             {
                                 var x = arr[k]['name'];
-                                var p = x.length  > 50 ? x.substring(0,50)+'...' : x;
+                                var p = x.length  > 80 ? x.substring(0,80)+'...' : x;
                                 $("#myInputautocomplete-list").append('<div class="docname"><a href="{{url('/')}}/'+arr[k]['slug']+'.html'+'"><div class="search-content"><p>'+p+'</p></div></a></div>');
                             }
                         }
@@ -585,6 +593,7 @@ var checkoutbutton = '<a class="button" href="{{route("front.checkout")}}" title
     	jQuery('#brandSelector').change(function() {
       jQuery('.ajaxloadermodal').show();
     	var brandId = jQuery(this).val();
+        var current_category_id = jQuery("#current_category_id").val();
 var token = jQuery(this).find('input[name=_token]').val();
     	jQuery.ajax({
     			type: "GET",
@@ -601,7 +610,7 @@ var token = jQuery(this).find('input[name=_token]').val();
         jQuery.ajax({
       			type: "GET",
       			url: "{{URL::to('/sidebarsearch/findcategories')}}",
-      			data: { bid: brandId },
+      			data: { bid: brandId, current_category_id:current_category_id },
       			success: function(resp) {
               console.log(resp);
       				jQuery('#categoriesSelector').html(resp);

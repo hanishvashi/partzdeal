@@ -48,7 +48,11 @@
         $total_t_prices = count($tier_prices);
         $lowestprice = min(array_column($tier_prices, 'price'));
         @endphp
-        <div class="text-muted mb-3">As Low As: {{$curr->sign}}{{ number_format($lowestprice, 2) }}</div>
+          @if($store_code=='partzdeal-india')
+          <div class="text-muted mb-3">As Low As: {{$curr->sign}}{{ number_format($lowestprice, 2) }}</div>  
+          @else
+          <div class="text-muted mb-3">As Low As: {{$curr->sign}}{{ $lowestprice }}</div>
+          @endif
         @endif
 
         <div class="row nomargin">
