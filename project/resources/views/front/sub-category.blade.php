@@ -1,4 +1,12 @@
 @extends('layouts.front')
+<?php if(isset($subcat)){
+$catinfo = $subcat;
+}else{
+$catinfo = $cat;
+}?>
+@section('title')
+{{$gs->title}} - {{$catinfo->cat_name}}
+@endsection
 @section('content')
 @php
 $i=1;
@@ -14,11 +22,7 @@ $j=1;
           <div class="col-12 col-md-4 col-lg-3 col-xl-3">
 						@include('includes.catalog')
           </div>
-					<?php if(isset($subcat)){
-						$catinfo = $subcat;
-					}else{
-						$catinfo = $cat;
-					}?>
+					
 					<!--input type="hidden" id="category_id" name="category_id" value="<?php //echo $catinfo->id;?>"-->
           <div class="col-12 col-md-8 col-lg-9 col-xl-9">
             <div class="row">

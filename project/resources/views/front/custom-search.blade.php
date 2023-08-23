@@ -1,4 +1,7 @@
 @extends('layouts.front')
+@section('title')
+{{$gs->title}} - Custom Search
+@endsection
 @section('content')
     
 <div id="content">

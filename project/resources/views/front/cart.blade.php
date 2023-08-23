@@ -1,4 +1,7 @@
 @extends('layouts.front')
+@section('title')
+{{$gs->title}} - Cart
+@endsection
 @section('content')
 
 <!-- Starting of ViewCart area -->

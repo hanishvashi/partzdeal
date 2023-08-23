@@ -1,4 +1,7 @@
 @extends('layouts.front')
+@section('title')
+{{$gs->title}}
+@endsection
 @section('content')
 <div class="section-padding product-shoppingCart-wrapper pb-0">
   <div class="container">

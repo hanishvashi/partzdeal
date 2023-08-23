@@ -1,4 +1,7 @@
 @extends('layouts.front')
+@section('title')
+{{$gs->title}} - FAQ
+@endsection
 @section('content')
 
     

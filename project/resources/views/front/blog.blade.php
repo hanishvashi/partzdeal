@@ -1,4 +1,7 @@
 @extends('layouts.front')
+@section('title')
+{{$gs->title}} - Blogs
+@endsection
 @section('content')
 
 

@@ -1,6 +1,8 @@
 @extends('layouts.front')
 
-
+@section('title')
+{{$gs->title}} - Contact
+@endsection
 @section('content')
 
 <div class="section-padding login-area-wrapper">

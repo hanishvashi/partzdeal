@@ -1,10 +1,10 @@
 @extends('layouts.front')
-
-
+@section('title')
+{{$gs->title}} - Success
+@endsection
 
 
 @section('content')
-
 <section class="tempcart">
 
 @if(!empty($tempcart))

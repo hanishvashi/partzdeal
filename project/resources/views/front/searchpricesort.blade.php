@@ -1,4 +1,7 @@
 @extends('layouts.front')
+@section('title')
+{{$gs->title}} - Price Sort
+@endsection
 @section('content')
 @php
 $i=1;

@@ -1,5 +1,7 @@
 @extends('layouts.front')
-
+@section('title')
+{{$gs->title}} - Checkout
+@endsection
 @section('styles')
 
 <style type="text/css">

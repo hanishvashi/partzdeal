@@ -1,4 +1,7 @@
 @extends('layouts.front')
+@section('title')
+{{$gs->title}} - {{$childcat->child_name}}
+@endsection
 @section('content')
 @php
 $i=1;

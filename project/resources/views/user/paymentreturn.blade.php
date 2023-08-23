@@ -1,4 +1,7 @@
 @extends('layouts.front')
+@section('title')
+{{$gs->title}} - Payment Successful
+@endsection
 @section('content')
 
     <div id="page-wrapper">

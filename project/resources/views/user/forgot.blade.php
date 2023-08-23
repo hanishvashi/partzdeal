@@ -1,4 +1,7 @@
 @extends('layouts.front')
+@section('title')
+{{$gs->title}} - Forgot Password
+@endsection
 @section('content')
 <div class="section-padding login-area-wrapper">
            <div class="container">

@@ -1,4 +1,7 @@
 @extends('layouts.front')
+@section('title')
+{{$gs->title}} - Login
+@endsection
 @section('content')
     <!-- Starting of Login/registration area -->
     <div class="section-padding login-wrap">

@@ -1,4 +1,7 @@
 @extends('layouts.front')
+@section('title')
+{{$gs->title}} - {{$page->title}}
+@endsection
 @section('content')
 
     <div class="section-padding">

@@ -1,4 +1,7 @@
 @extends('layouts.front')
+@section('title')
+{{$gs->title}} - Search Product Price
+@endsection
 @section('content')
 @php
 $i=1;

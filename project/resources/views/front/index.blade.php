@@ -1,4 +1,7 @@
 @extends('layouts.front')
+@section('title')
+{{$gs->title}} 
+@endsection
 @section('content')
     <style type="text/css">
         @media only screen and (max-width: 767px) {

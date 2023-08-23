@@ -1,4 +1,7 @@
 @extends('layouts.front')
+@section('title')
+{{$gs->title}}
+@endsection
 @section('content')
 <style>
 .razorpay-payment-button{

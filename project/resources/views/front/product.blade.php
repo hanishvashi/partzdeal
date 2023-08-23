@@ -1,4 +1,7 @@
 @extends('layouts.front')
+@section('title')
+{{$gs->title}} - {{$product->name}}
+@endsection
 @section('styles')
     <style type="text/css">
 .replay-btn, .replay-btn-edit, .replay-btn-delete, .replay-btn-edit1, .replay-btn-delete1, .replay-btn-edit2, .replay-btn-delete2, .subreplay-btn, .view-replay-btn {

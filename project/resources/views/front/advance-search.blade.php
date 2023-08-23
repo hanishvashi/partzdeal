@@ -1,4 +1,7 @@
 @extends('layouts.front')
+@section('title')
+{{$gs->title}} - Advance Search
+@endsection
 @section('content')
 @php
 $i=1;

@@ -14,7 +14,8 @@
         <meta name="keywords" content="{{ $seo->meta_keys }}">
     @endif
     <meta name="author" content="Partzdeal">
-    <title>{{$gs->title}}</title>
+    <!--title>{{$gs->title}}</title-->
+    <title>@yield('title')</title>
     <!-- Font Awesome CSS -->
 <!--style type="text/css">
     @import url('https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900|Rubik:300,400,500,700,900');
