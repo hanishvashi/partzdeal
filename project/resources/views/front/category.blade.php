@@ -5,8 +5,12 @@ $catinfo = $subcat;
 }else{
 $catinfo = $cat;
 }?>
-@section('title')
-{{$gs->title}} - {{$catinfo->cat_name}}
+@section('title'){{$gs->title}} - {{$catinfo->cat_name}} @endsection
+@section('meta_description')
+<meta name="description" content="{{$catinfo->meta_description}}">
+@endsection
+@section('meta_tag')
+<meta name="keywords" content="{{ $catinfo->meta_keywords }}">
 @endsection
 @section('content')
 @php
@@ -34,6 +38,7 @@ $j=1;
 							</div>
               <div class="col-12 col-sm-5 col-lg-4 col-xl-3 align-self-center text-right">
 					<select onchange="CatalogSearchfilter();" id="sortby" class="custom-select">
+          <option value="" >Sort By</option>
 					@if($sort == "new")
 					<option value="new" selected>{{$lang->doe}}</option>
 					@else

@@ -1,7 +1,12 @@
 @extends('layouts.front')
-@section('title')
-{{$gs->title}} 
+@section('title'){{$gs->title}} @endsection
+@section('meta_description')
+<meta name="description" content="{{$gs->title}}">
 @endsection
+@section('meta_tag')
+<meta name="keywords" content="{{ $seo->meta_keys }}">
+@endsection
+
 @section('content')
     <style type="text/css">
         @media only screen and (max-width: 767px) {

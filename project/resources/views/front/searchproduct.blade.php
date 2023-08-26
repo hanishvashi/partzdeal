@@ -1,7 +1,12 @@
 @extends('layouts.front')
-@section('title')
-{{$gs->title}} - Search Product
+@section('title'){{$gs->title}} - Search Product @endsection
+@section('meta_description')
+<meta name="description" content="{{$gs->title}}">
 @endsection
+@section('meta_tag')
+<meta name="keywords" content="{{ $seo->meta_tag }}">
+@endsection
+
 @section('content')
 @php
 $i=1;

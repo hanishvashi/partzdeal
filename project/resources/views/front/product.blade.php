@@ -1,6 +1,10 @@
 @extends('layouts.front')
-@section('title')
-{{$gs->title}} - {{$product->name}}
+@section('title'){{$gs->title}} - {{$product->name}} @endsection
+@section('meta_description')
+<meta name="description" content="{{$product->meta_description}}">
+@endsection
+@section('meta_tag')
+<meta name="keywords" content="{{ $product->meta_tag }}">
 @endsection
 @section('styles')
     <style type="text/css">

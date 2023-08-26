@@ -1,6 +1,10 @@
 @extends('layouts.front')
-@section('title')
-{{$gs->title}} - Forgot Password
+@section('title'){{$gs->title}} - Forgot Password @endsection
+@section('meta_description')
+<meta name="description" content="{{$gs->title}}">
+@endsection
+@section('meta_tag')
+<meta name="keywords" content="{{ $seo->meta_tag }}">
 @endsection
 @section('content')
 <div class="section-padding login-area-wrapper">

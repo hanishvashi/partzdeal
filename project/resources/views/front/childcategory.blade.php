@@ -1,6 +1,10 @@
 @extends('layouts.front')
-@section('title')
-{{$gs->title}} - {{$childcat->child_name}}
+@section('title') {{$gs->title}} - {{$childcat->child_name}} @endsection
+@section('meta_description')
+<meta name="description" content="{{$childcat->meta_description}}">
+@endsection
+@section('meta_tag')
+<meta name="keywords" content="{{ $childcat->meta_keywords }}">
 @endsection
 @section('content')
 @php

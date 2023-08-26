@@ -7,7 +7,7 @@
 <h6 style="font-size: 12px; font-weight: 700; margin-bottom: 0px; margin-top: 5px; text-transform: uppercase; float: left; width: 140px">Email:</h6></td>
 <td><p>{{$order->customer_email}}</p></td></tr><tr><td style="background: #cccccc; text-align: left">
 <h6 style="font-size: 12px; font-weight: 700; margin-bottom: 0px; margin-top: 5px; text-transform: uppercase; float: left; width: 140px">Contact Number:</h6></td>
-<td><p>{{$order->customer_email}}</p></td></tr>
+<td><p>{{$order->customer_phone}}</p></td></tr>
 <tr><td style="background: #cccccc; text-align: left">
 <h6 style="font-size: 12px; font-weight: 700; margin-bottom: 0px; margin-top: 5px; text-transform: uppercase; float: left; width: 140px">Country:</h6></td>
 <td><p>{{$order->customer_country}}</p></td></tr><tr><td style="background: #cccccc; text-align: left"><h6 style="font-size: 12px; font-weight: 700; margin-bottom: 0px; margin-top: 5px; text-transform: uppercase; float: left; width: 140px">Region:</h6></td>

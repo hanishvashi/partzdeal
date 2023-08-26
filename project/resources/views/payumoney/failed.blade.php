@@ -1,6 +1,10 @@
 @extends('layouts.front')
-@section('title')
-{{$gs->title}} - Payment Failed
+@section('title'){{$gs->title}} - Payment Failed @endsection
+@section('meta_description')
+<meta name="description" content="{{$gs->title}}">
+@endsection
+@section('meta_tag')
+<meta name="keywords" content="{{ $seo->meta_tag }}">
 @endsection
 @section('content')
 <div class="section-padding product-shoppingCart-wrapper pb-0">

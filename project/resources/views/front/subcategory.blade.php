@@ -1,6 +1,7 @@
 @extends('layouts.front')
-@section('title')
-{{$gs->title}}
+@section('title'){{$gs->title}} @endsection
+@section('meta_tag')
+<meta name="keywords" content="{{ $seo->meta_tag }}">
 @endsection
 @section('content')
 @php
