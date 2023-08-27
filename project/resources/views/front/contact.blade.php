@@ -38,7 +38,7 @@
                                      <input class="form-control" name="email" placeholder="{{$lang->coe}}" required="" type="email">
                                  </div>
                                  <div class="form-group {{$lang->rtl == 1 ? 'text-right' : ''}}">
-                                   <textarea class="form-control" name="text" id="comment" placeholder="{{$lang->cor}}" cols="30" rows="10" style="resize: vertical;" required=""></textarea>
+                                   <textarea class="form-control" name="comment" id="comment" placeholder="{{$lang->cor}}" cols="30" rows="10" style="resize: vertical;" required=""></textarea>
                                    </div>
 
                                      <div class="form-group {{$lang->rtl == 1 ? 'text-right' : ''}}">

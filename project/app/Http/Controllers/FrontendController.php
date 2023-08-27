@@ -387,13 +387,13 @@ class FrontendController extends Controller
         }
         if($sort == "new")
         {
-            $cats = $cats->orderBy('id','desc');
+            $cats = $cats->orderBy('id','desc')->orderBy('total_photo','desc');
         }elseif($sort == "old"){
-            $cats = $cats->orderBy('id','asc');
+            $cats = $cats->orderBy('id','asc')->orderBy('total_photo','desc');
         }elseif($sort == "low"){
-            $cats = $cats->orderBy('products.cprice','asc');
+            $cats = $cats->orderBy('products.cprice','asc')->orderBy('total_photo','desc');
         }elseif($sort == "high"){
-            $cats = $cats->orderBy('products.cprice','desc');
+            $cats = $cats->orderBy('products.cprice','desc')->orderBy('total_photo','desc');
         }else{
             //$cats = $cats->orderBy('products.id','desc');
             $cats = $cats->orderBy('total_photo','desc');
@@ -1599,9 +1599,9 @@ $totalPrice = $cart->totalCartAmount($cart);
         $to = $request->to;
         $name = $request->name;
         $phone = $request->phone;
-        $department = $request->department;
+        $comment = $request->comment;
         $from = $request->email;
-        $msg = "Name: ".$name."\nEmail: ".$from."\nPhone: ".$request->phone."\nMessage: ".$request->text;
+        $msg = "Name: ".$name."\nEmail: ".$from."\nPhone: ".$request->phone."\nMessage: ".$comment;
         
         $pattern = '~[a-z]+://\S+~';
         if($num_found = preg_match_all($pattern, $request->text, $out))
