@@ -571,8 +571,8 @@ Route::post('/product/create2', 'UserProductController@store2')->name('user-prod
 
   Route::get('/{slug1}/{slug2}.html','FrontendController@subcategory')->name('front.subcategory');
 
-  Route::get('/sidebarsearch/findseries','FrontendController@FindBrandSeries');
-  Route::get('/sidebarsearch/findcategories','FrontendController@FindBrandCategories');
+  Route::post('/sidebarsearch/findseries','FrontendController@FindBrandSeries');
+  Route::post('/sidebarsearch/findcategories','FrontendController@FindBrandCategories');
   Route::get('/sidebarsearch/findsubcategories','FrontendController@FindSubCategories');
 
 
@@ -644,5 +644,7 @@ Route::post('/json/subcategoryfilterproductajax','FrontendController@AjaxFilterP
   //Route::get('/{slug}.html','FrontendController@product')->name('front.product');
 
  //Route::get('/{slug}.html','FrontendController@category')->name('front.category'); // Open Parent Category Page
+
+Route::get('/payment-mail', 'Front\PaymentController@paymentMail');
 
   Route::get('/email/test','EmailController@sendMail')->name('mail.test');

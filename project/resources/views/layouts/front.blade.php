@@ -590,23 +590,24 @@ var checkoutbutton = '<a class="button" href="{{route("front.checkout")}}" title
         var current_category_id = jQuery("#current_category_id").val();
 var token = jQuery(this).find('input[name=_token]').val();
     	jQuery.ajax({
-    			type: "GET",
+    			type: "POST",
     			url: "{{URL::to('/sidebarsearch/findseries')}}",
-    			data: { bid: brandId },
+    			data: { "bid": brandId, "_token": "{{ csrf_token() }}" },
     			success: function(resp) {
-            //console.log(resp);
+                    //console.log(resp);
     				jQuery('#seriesSelector').html(resp);
     				jQuery('.ajaxloadermodal').hide();
     			}
     		});
 
         //jQuery('#cat-loader').css("display", "block");
+        console.log(current_category_id);
         jQuery.ajax({
-      			type: "GET",
+      			type: "POST",
       			url: "{{URL::to('/sidebarsearch/findcategories')}}",
-      			data: { bid: brandId, current_category_id:current_category_id },
+      			data: { "bid": brandId, "current_category_id":current_category_id,"_token": "{{ csrf_token() }}" },
       			success: function(resp) {
-              console.log(resp);
+                    console.log(resp);
       				jQuery('#categoriesSelector').html(resp);
       				jQuery('.ajaxloadermodal').hide();
       			}

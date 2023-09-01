@@ -640,6 +640,18 @@ public function notify(Request $request){
     public function sendEmailtoCustomer($order)
     {
         try {
+            if (Session::has('FRONT_STORE_ID')){
+            $this->store_id = session('FRONT_STORE_ID');
+            $store_code = $this->store_code = session('FRONT_STORE_CODE');
+            }else{
+            //$ip = '203.192.237.76'; /* Static IP address */
+            $ip = $_SERVER['REMOTE_ADDR'];
+            $storeinfo = $this->getCurrentStoreLocation($ip);
+            $this->store_id = $storeinfo->id;
+            $store_code = $this->store_code = $storeinfo->store_code;
+            session()->put('FRONT_STORE_CODE', $store_code);
+            session()->put('FRONT_STORE_ID', $this->store_id);
+            }
         $gs = Generalsetting::where('store_id',$this->store_id)->first();
         $to = $order->customer_email;
         $subject = "Partzdeal - Your Order Placed!!";
@@ -659,8 +671,20 @@ public function notify(Request $request){
     public function sendEmailtoAdmin($order)
     {
         try {
+            if (Session::has('FRONT_STORE_ID')){
+            $this->store_id = session('FRONT_STORE_ID');
+            $store_code = $this->store_code = session('FRONT_STORE_CODE');
+            }else{
+            //$ip = '203.192.237.76'; /* Static IP address */
+            $ip = $_SERVER['REMOTE_ADDR'];
+            $storeinfo = $this->getCurrentStoreLocation($ip);
+            $this->store_id = $storeinfo->id;
+            $store_code = $this->store_code = $storeinfo->store_code;
+            session()->put('FRONT_STORE_CODE', $store_code);
+            session()->put('FRONT_STORE_ID', $this->store_id);
+            }
         $gs = Generalsetting::where('store_id',$this->store_id)->first();
-        $to = Pagesetting::find(1)->contact_email;
+        $to = Pagesetting::where('store_id',$this->store_id)->first()->contact_email;
         $subject = "Partzdeal - New Order Recieved!!";
         $cart = unserialize(bzdecompress(utf8_decode($order->cart)));
         $email_body = view('emails.customerorder',compact('order','gs','cart'));
@@ -672,6 +696,13 @@ public function notify(Request $request){
     } catch (\Exception $e) {
             Log::error($e->getMessage());
           }
+    }
+    
+    public function paymentMail()
+    {
+        $order = Order::where('id',34)->first();
+        $this->sendEmailtoCustomer($order);
+        $this->sendEmailtoAdmin($order);
     }
     
     public function sendEmailtoAdminPreOrder($order)

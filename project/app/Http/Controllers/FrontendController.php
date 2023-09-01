@@ -1774,9 +1774,9 @@ $totalPrice = $cart->totalCartAmount($cart);
         return $allseries;
     }
 
-    public function FindBrandSeries()
+    public function FindBrandSeries(Request $request)
     {
-      $brand_id = $_GET['bid'];
+      $brand_id = $request->bid;
       $allseries = $this->getBrandSeries($brand_id);
       return view('includes.select-series',compact('allseries'));
     }
@@ -1790,10 +1790,16 @@ $totalPrice = $cart->totalCartAmount($cart);
         return $allcategories;
     }
 
-    public function FindBrandCategories()
+    public function FindBrandCategories(Request $request)
     {
-      $brand_id = $_GET['bid'];
-      $current_category_id = $_GET['current_category_id'];
+      $brand_id = $request->bid;
+      if(isset($request->current_category_id))
+        {
+            $current_category_id = $request->current_category_id;
+        }else{
+            $current_category_id = null;
+        }
+      
       //echo $brand_id = $request->bid;
       $allcategories = $this->getBrandCategories($brand_id);
       $allseries = $this->getBrandSeries($brand_id);

@@ -4,6 +4,7 @@ namespace App\Traits;
 use Illuminate\Http\Request;
 use Stevebauman\Location\Facades\Location;
 use App\Stores;
+use Exception;
 
 trait StoreTrait {
 
@@ -23,8 +24,9 @@ trait StoreTrait {
   {
     if($_SERVER['SERVER_NAME']=='localhost')
     {
-      return $this->getStoreDetail(3); // Set default to India on LocalHost server
+      return $this->getStoreDetail(1); // Set default to India on LocalHost server
     }else{
+      try {
       $currentUserInfo = Location::get($ip);
       if($currentUserInfo->countryName=='India')
       {
@@ -38,6 +40,9 @@ trait StoreTrait {
       }else{
         return $this->getStoreDetail(3);
       }
+        } catch (Exception $e) {
+          return $this->getStoreDetail(1);
+        }
       
     }
 
