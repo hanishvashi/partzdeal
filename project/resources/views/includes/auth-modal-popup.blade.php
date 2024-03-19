@@ -84,6 +84,7 @@
                                     <label class="form-check-label">Email me special offers and news.</label>
                                 </div>
                             </div>
+                            <div clsss="form-group"><div class="g-recaptcha" data-sitekey="6LdbGOMUAAAAAMur04xif6mNpWdw0GI2NCBZw8kx"></div></div>
                             <input type="hidden" name="wish" value="1">
                             <button type="submit" class="btn btn_submit">{{$lang->spe}}</button>
                         </form>
@@ -162,7 +163,7 @@
                         <div class="form-group {{$lang->rtl == 1 ? 'text-right' : ''}}">
                             <textarea name="message" placeholder="Comment" id="message" class="form-control" required></textarea>
                         </div>
-
+                        <div clsss="form-group"><div class="g-recaptcha" data-sitekey="6LdbGOMUAAAAAMur04xif6mNpWdw0GI2NCBZw8kx"></div></div>
 
                         <input type="hidden" id="enq_product_id" name="product_id" value="">
                         <input type="hidden" id="enq_product_sku" name="product_sku" value="">

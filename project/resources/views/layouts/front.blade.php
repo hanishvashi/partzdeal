@@ -312,6 +312,7 @@
 <script src="{{asset('assets/website/js/main.js')}}"></script>
 <script src="{{asset('assets/website/js/custom.js')}}"></script>
 <script src="{{asset('assets/website/js/mmenu-light.js')}}"></script>
+<script src='https://www.google.com/recaptcha/api.js'></script>
 <!--script src="{{asset('assets/website/js/main.js')}}"></script-->
 <!--script src="{{asset('assets/front/js/all.js')}}"></script-->
 
@@ -649,6 +650,7 @@ var token = jQuery(this).find('input[name=_token]').val();
         $(document).ready(function(){
 
           $(document).on("click", ".enqbtn" , function(){
+              grecaptcha.reset();
             var productid = $(this).data("productid");
             var productsku = $(this).data("productsku");
             var productname = $(this).data("productname");

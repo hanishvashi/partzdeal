@@ -1466,47 +1466,61 @@ $totalPrice = $cart->totalCartAmount($cart);
 		return view('front.contact');
 	}
 
-  public function InquirySend(Request $request)
-  {
-    $your_name = $request->your_name;
-    $your_email = $request->your_email;
-    $your_phone = $request->your_phone;
-    $product_id = $request->product_id;
-    $product_sku = $request->product_sku;
-    $product_name = $request->product_name;
-    $message = $request->message;
-    $pattern = '~[a-z]+://\S+~';
-    if($num_found = preg_match_all($pattern, $message, $out))
+    public function InquirySend(Request $request)
     {
-    $response['status'] = true;
-    $response['message'] = "Your inquiry has been sent to the store admin.";
-    }else{
-
-    $subject = "Partzdeal Product Inquiry";
-    $to = "durapartug@gmail.com";
-
-    $msg = "Name: ".$your_name."\nEmail: ".$your_email."\nPhone Number: ".$your_phone."\nMessage: ".$message."\nProduct SKU: ".$product_sku."\nProduct Name: ".$product_name;
-
-    if (Session::has('FRONT_STORE_ID')){
-    $this->store_id = session('FRONT_STORE_ID');
-    $store_code = $this->store_code = session('FRONT_STORE_CODE');
-    }else{
-    $ip = $_SERVER['REMOTE_ADDR'];
-    $storeinfo = $this->getCurrentStoreLocation($ip);
-    $this->store_id = $storeinfo->id;
-    $store_code = $this->store_code = $storeinfo->store_code;
-    session()->put('FRONT_STORE_CODE', $store_code);
-    session()->put('FRONT_STORE_ID', $this->store_id);
+      if(isset($_POST['g-recaptcha-response'])){
+      $captcha=$_POST['g-recaptcha-response'];
+      }
+          if(!$captcha){
+            $response['status'] = false;
+          $response['message'] = "Please select recaptcha.";
+          }else{
+      $your_name = $request->your_name;
+      $your_email = $request->your_email;
+      $your_phone = $request->your_phone;
+      $product_id = $request->product_id;
+      $product_sku = $request->product_sku;
+      $product_name = $request->product_name;
+      $message = $request->message;
+      if(empty($product_sku) OR empty($product_id) OR empty($product_name))
+      {
+        $response['status'] = false;
+        $response['message'] = "Please select product.";
+        return response()->json($response);
+      }
+      $pattern = '~[a-z]+://\S+~';
+      if($num_found = preg_match_all($pattern, $message, $out))
+      {
+      $response['status'] = true;
+      $response['message'] = "Your inquiry has been sent to the store admin.";
+      }else{
+  
+      $subject = "Partzdeal Product Inquiry";
+      $to = "support@partzdeal.com";
+  
+      $msg = "Name: ".$your_name."\nEmail: ".$your_email."\nPhone Number: ".$your_phone."\nMessage: ".$message."\nProduct SKU: ".$product_sku."\nProduct Name: ".$product_name;
+  
+      if (Session::has('FRONT_STORE_ID')){
+      $this->store_id = session('FRONT_STORE_ID');
+      $store_code = $this->store_code = session('FRONT_STORE_CODE');
+      }else{
+      $ip = $_SERVER['REMOTE_ADDR'];
+      $storeinfo = $this->getCurrentStoreLocation($ip);
+      $this->store_id = $storeinfo->id;
+      $store_code = $this->store_code = $storeinfo->store_code;
+      session()->put('FRONT_STORE_CODE', $store_code);
+      session()->put('FRONT_STORE_ID', $this->store_id);
+      }
+      $gs = Generalsetting::where('store_id',$this->store_id)->first();
+          
+      $headers = "From: ".$gs->from_name."<".$gs->from_email.">";
+      mail($to,$subject,$msg,$headers);
+      $response['status'] = true;
+      $response['message'] = "Your inquiry has been sent to the store admin.";
+          }
+      }
+      return response()->json($response);
     }
-    $gs = Generalsetting::where('store_id',$this->store_id)->first();
-        
-    $headers = "From: ".$gs->from_name."<".$gs->from_email.">";
-    mail($to,$subject,$msg,$headers);
-    $response['status'] = true;
-    $response['message'] = "Your inquiry has been sent to the store admin.";
-    }
-    return response()->json($response);
-  }
 
 
     //Send email to user

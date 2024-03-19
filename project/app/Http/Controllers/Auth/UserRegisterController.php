@@ -24,6 +24,13 @@ class UserRegisterController extends Controller
     public function register(Request $request)
     {
       // Validate the form data
+      if(isset($_POST['g-recaptcha-response'])){
+        $captcha=$_POST['g-recaptcha-response'];
+        }
+
+        if(!$captcha){
+          return redirect()->route('front.index');
+        }else{
 
       $this->validate($request, [
         'email'   => 'required|email|unique:users',
@@ -66,6 +73,7 @@ class UserRegisterController extends Controller
         $notification->save();
         Auth::guard('user')->login($user);
         return redirect()->route('/');
+      }
     }
 
     public function RegisterAjax(Request $request)
